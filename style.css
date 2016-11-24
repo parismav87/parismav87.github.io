@@ -1,0 +1,93 @@
+.login-box{
+	float: left;
+	width: 20vw;
+}
+
+.hidden{
+	display: none;
+}
+
+.own-name{
+	position: absolute;
+	font-size: 4vw;
+	bottom: 50px;
+}
+
+.opponent-name{
+	position: absolute;
+	font-size: 4vw;
+	top: 50px;
+}
+
+.waiting-for-player{
+	width: 20vw;
+	height: 20vw;
+	float: left;
+	text-align: center;
+}
+.waiting-for-player-img{
+	width: 5vw;
+}
+
+.waiting-for-player-text{
+	font-size: 1.7vw;
+}
+
+.player-turn{
+	float: right;
+	padding-top: 50vh;
+}
+
+.gameboard-number-opponent, .gameboard-number-own{
+	font-size: 64px;
+}
+
+.gameboard-number-own{
+	text-align: center;
+	cursor: pointer;
+}
+
+.gameboard-number-own.selected{
+	background-color: rgba(98, 252, 15, 0.5);
+}
+
+.gameboard-number-own.disabled{
+	background-color: rgba(114, 114, 114, 0.5);
+}
+
+.gameboard-number-opponent::after{
+	content: "?";
+	margin: 3vw;
+}
+
+.gameboard{
+	position: absolute;
+	left: 25vw;
+	height: 95vh;
+	width: 50vw;
+	border: 2px solid black;
+	z-index: 1;
+}
+
+.gameboard-number{
+	position: relative;
+	margin: 1vw;
+	height: 10vw;
+	width: 10vw;
+	border: 1px solid black;
+	float: left;
+	z-index: 99;
+}
+
+.gameboard-top-wrapper{
+	position: absolute;
+	top: 2px;
+	left: 2px;
+}
+
+.gameboard-bottom-wrapper{
+	position: absolute;
+	bottom: 2px;
+	left: 2px;
+	z-index: 9;
+}

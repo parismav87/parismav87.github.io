@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+		<script src="core.js"></script>
+		<script src="handlers.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<div class="login-box">
+			<button class='btn-connect'>connect</button>
+			<input class="input-nickname" placeholder="Enter your nickname..."></input>
+		</div>
+		<div class="waiting-for-player hidden">
+			<span class="waiting-for-player-text">Waiting for an opponent</span>
+			<img src="squares.gif" class="waiting-for-player-img">
+		</div>
+		<span class="opponent-name hidden"></span>
+		<span class="own-name"></span>
+		
+		<div class="gameboard">
+			<div class="gameboard-top-wrapper">
+				<div class="gameboard-number-opponent-0 gameboard-number gameboard-number-opponent" data-position="0"></div>
+				<div class="gameboard-number-opponent-1 gameboard-number gameboard-number-opponent" data-position="1"></div>
+				<div class="gameboard-number-opponent-2 gameboard-number gameboard-number-opponent" data-position="2"></div>
+				<div class="gameboard-number-opponent-3 gameboard-number gameboard-number-opponent" data-position="3"></div>
+			</div>
+			<div class="gameboard-bottom-wrapper">
+				<div class="gameboard-number-own-0 gameboard-number gameboard-number-own" data-position="0"></div>
+				<div class="gameboard-number-own-1 gameboard-number gameboard-number-own" data-position="1"></div>
+				<div class="gameboard-number-own-2 gameboard-number gameboard-number-own" data-position="2"></div>
+				<div class="gameboard-number-own-3 gameboard-number gameboard-number-own" data-position="3"></div>
+			</div>
+		</div>
+		<span class="player-turn"></span>
+	</body>
+</html>
