@@ -1,4 +1,4 @@
-var socket = io();
+var socket = io("https://hidden-tundra-65812.herokuapp.com");
 mouseUpTarget = null;
 mouseDownTarget = null;
 selectedBlock = null;
