@@ -22,10 +22,10 @@
 				.attr("width", "1024px")
 				.attr("height", "768px")
 
-				for(d in data){
+				for(var d in data){
 					svg.append("circle")
-					.attr("cx", 25 * Number(d.grade))
-					.attr("cy", 25 * Number(d.grade))		
+					.attr("cx", 25 * Number(data[d].grade))
+					.attr("cy", 25 * Number(data[d].grade))		
 					.attr("r", 25)
 					.style("fill", "purple");
 				}
