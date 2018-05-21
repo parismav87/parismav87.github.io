@@ -13,7 +13,7 @@
 
 		<script type="text/javascript">
 
-
+			var colors = [rgb(244, 66, 66), rgb(244, 146, 65), rgb(242, 210, 33), rgb(196, 234, 7), rgb(2, 224, 120)]
 			//Load in agriculture data
 			d3.csv("example.csv", function(data) {
 				console.log(data)	
@@ -25,11 +25,11 @@
 				for(var d in data){
 					svg.append("text")
 					.attr("x", 50 * Number(data[d].grade))
-					.attr("y", 700)		
+					.attr("y", 500)		
 					.text(data[d].grade)
 					.attr("font-family", "Helvetica")
                  	.attr("font-size", "50px")
-                 	.attr("fill", "red");
+                 	.attr("fill", colors[d]);
 				}
 				
 
