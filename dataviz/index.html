@@ -16,7 +16,17 @@
 
 			//Load in agriculture data
 			d3.csv("example.csv", function(data) {
-				console.log(data)				
+				console.log(data)	
+
+				d3.select("body")
+				.append("svg")	
+				.attr("width", "1024px")
+				.attr("height", "768px")
+				.append("circle")
+				.attr("cx", 25)
+				.attr("cy", 25)		
+				.attr("r", 25)
+				.style("fill", "purple");
 			});
 
 		</script>
