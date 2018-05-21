@@ -23,11 +23,13 @@
 				.attr("height", "768px")
 
 				for(var d in data){
-					svg.append("circle")
-					.attr("cx", 25 * Number(data[d].grade))
-					.attr("cy", 25 * Number(data[d].grade))		
-					.attr("r", 25)
-					.style("fill", "purple");
+					svg.append("text")
+					.attr("x", 50 * Number(data[d].grade))
+					.attr("y", 700)		
+					.text(data[d].grade)
+					.attr("font-family", "Helvetica")
+                 	.attr("font-size", "50px")
+                 	.attr("fill", "red");
 				}
 				
 
