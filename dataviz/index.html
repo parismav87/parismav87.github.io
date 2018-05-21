@@ -24,8 +24,8 @@
 
 				for(d in data){
 					svg.append("circle")
-					.attr("cx", 25 * d.grade)
-					.attr("cy", 25 * d.grade)		
+					.attr("cx", 25 * Number(d.grade))
+					.attr("cy", 25 * Number(d.grade))		
 					.attr("r", 25)
 					.style("fill", "purple");
 				}
