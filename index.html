@@ -1,38 +1,303 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 	<head>
-		<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-		<script src="core.js"></script>
-		<script src="handlers.js"></script>
+		<title>Paris Mavromoustakos-Blom Personal Website, Blog, Free Drum Transcriptions</title>
+		<link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="style.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<script src="src.js"></script>
+		<meta name="description" content="Hi, my name is Paris and I'm a programmer. This is my personal Website where I publish my CV, my thoughts, my programming projects and free drum transcriptions that I write.">
+		<link rel="canonical" href="http://www.pmblom.com" />
+		<meta charset="UTF-8">
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+		<link rel="icon" href="favicon.ico" type="image/x-icon">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-60494329-2', 'auto');
+		  ga('send', 'pageview');
+		</script>
 	</head>
+
 	<body>
-		<div class="login-box">
-			<button class='btn-connect'>connect</button>
-			<input class="input-nickname" placeholder="Enter your nickname..."></input>
-		</div>
-		<div class="waiting-for-player hidden">
-			<span class="waiting-for-player-text">Waiting for an opponent</span>
-			<img src="squares.gif" class="waiting-for-player-img">
-		</div>
-		<span class="opponent-name hidden"></span>
-		<span class="own-name"></span>
-		
-		<div class="gameboard">
-			<div class="gameboard-top-wrapper">
-				<div class="gameboard-number-opponent-0 gameboard-number gameboard-number-opponent" data-position="0"></div>
-				<div class="gameboard-number-opponent-1 gameboard-number gameboard-number-opponent" data-position="1"></div>
-				<div class="gameboard-number-opponent-2 gameboard-number gameboard-number-opponent" data-position="2"></div>
-				<div class="gameboard-number-opponent-3 gameboard-number gameboard-number-opponent" data-position="3"></div>
+		<div class="top-bar">
+			<div class="top-logo">
+				<span class="top-logo-text">Paris Mavromoustakos-Blom</span>
 			</div>
-			<div class="gameboard-bottom-wrapper">
-				<div class="gameboard-number-own-0 gameboard-number gameboard-number-own" data-position="0"></div>
-				<div class="gameboard-number-own-1 gameboard-number gameboard-number-own" data-position="1"></div>
-				<div class="gameboard-number-own-2 gameboard-number gameboard-number-own" data-position="2"></div>
-				<div class="gameboard-number-own-3 gameboard-number gameboard-number-own" data-position="3"></div>
+			<div class="top-menu">
+				<div class="top-menu-item">
+					<span data-scrollto="#home" class="top-menu-item-text">Home</span>
+				</div>
+				<div class="top-menu-item">
+					<span data-scrollto="#cv" class="top-menu-item-text">Curriculum Vitae</span>
+				</div>
+				<div class="top-menu-item">
+					<span data-scrollto="#blog" class="top-menu-item-text">Blog</span>
+				</div>
+				<div class="top-menu-item">
+					<span data-scrollto="#programming" class="top-menu-item-text">Programming</span>
+				</div>
+				<div class="top-menu-item">
+					<span data-scrollto="#drums" class="top-menu-item-text">Drums</span>
+				</div>
 			</div>
 		</div>
-		<span class="player-turn"></span>
+
+		<div class="main-content">
+			<div class="main-content-leftbar">
+				<img class="main-content-leftbar-image paris_bw" alt="Website Logo" src="paris_bw.jpg">
+				<img class="main-content-leftbar-image acdc hidden" alt="Website Logo" src="acdc.jpg">
+				<img class="main-content-leftbar-image argentina hidden" alt="Website Logo" src="argentina.png">
+				<img class="main-content-leftbar-image award hidden" alt="Website Logo" src="award.png">
+				<img class="main-content-leftbar-image borg hidden" alt="Website Logo" src="borg.jpg">
+				<img class="main-content-leftbar-image cat hidden" alt="Website Logo" src="cat.png">
+				<img class="main-content-leftbar-image counterstrike hidden" alt="Website Logo" src="counterstrike.jpg">
+				<img class="main-content-leftbar-image dio hidden" alt="Website Logo" src="dio.png">
+				<img class="main-content-leftbar-image direstraits hidden" alt="Website Logo" src="direstraits.png">
+				<img class="main-content-leftbar-image drums hidden" alt="Website Logo" src="drums.png">
+				<img class="main-content-leftbar-image federer hidden" alt="Website Logo" src="federer.png">
+				<img class="main-content-leftbar-image football hidden" alt="Website Logo" src="football.png">
+				<img class="main-content-leftbar-image gaming hidden" alt="Website Logo" src="gaming.png">
+				<img class="main-content-leftbar-image hearthstone hidden" alt="Website Logo" src="hearthstone.png">
+				<img class="main-content-leftbar-image ireland hidden" alt="Website Logo" src="ireland.png">
+				<img class="main-content-leftbar-image japan hidden" alt="Website Logo" src="japan.png">
+				<img class="main-content-leftbar-image ledzep hidden" alt="Website Logo" src="ledzep.png">
+				<img class="main-content-leftbar-image musicsheet hidden" alt="Website Logo" src="musicsheet.png">
+				<img class="main-content-leftbar-image orange hidden" alt="Website Logo" src="orange.png">
+				<img class="main-content-leftbar-image paok hidden" alt="Website Logo" src="paok.png">
+				<img class="main-content-leftbar-image portugal hidden" alt="Website Logo" src="portugal.png">
+				<img class="main-content-leftbar-image princeofpersia hidden" alt="Website Logo" src="princeofpersia.png">
+				<img class="main-content-leftbar-image programmer hidden" alt="Website Logo" src="programmer.png">
+				<img class="main-content-leftbar-image sampras hidden" alt="Website Logo" src="sampras.png">
+				<img class="main-content-leftbar-image sweden hidden" alt="Website Logo" src="sweden.png">
+				<img class="main-content-leftbar-image tanzania hidden" alt="Website Logo" src="tanzania.jpg">
+				<img class="main-content-leftbar-image tennis hidden" alt="Website Logo" src="tennis.png">
+				<img class="main-content-leftbar-image thessaloniki hidden" alt="Website Logo" src="thessaloniki.jpg">
+				<img class="main-content-leftbar-image tool hidden" alt="Website Logo" src="tool.jpg">
+				<img class="main-content-leftbar-image win311 hidden" alt="Website Logo" src="win311.png">
+				<img class="main-content-leftbar-image zidane hidden" alt="Website Logo" src="zidane.png">
+				<br>
+				<span class="fun-fact"></span>
+				<div class="main-content-leftbar-bio">
+					<span class="main-content-leftbar-name">Paris Mavromoustakos-Blom</span><br>
+					<span class="main-content-leftbar-description">MSc. Artificial Intelligence</span><br>
+					<span class="main-content-leftbar-description">Ph.D. candidate @<a class="leftbar-link" href="https://www.tilburguniversity.edu/research/institutes-and-research-groups/ticc/" target="_blank">Tilburg University, Tilburg Center for Cognition and Communication</a></span>
+					<br><br>
+					
+					<span class="main-content-leftbar-description text-small">
+						Welcome to my personal website.
+					I'm a <span class="info-link" data-funfact='"Programming is the art of turning caffeine into code".' data-img="programmer.png">programmer</span>, I play the <span class="info-link" data-funfact='"John Bonham died because god wanted to learn how to play the drums".' data-img="drums.png">drums</span>, I play <span class="info-link" data-funfact="A tennis match takes approximately 2.5 hours. The ball is only in play for approximately 20 minutes of the 2.5 hours." data-img="tennis.png">tennis</span>, I love <span class="info-link" data-funfact="FIFA has more member countries than the U.N." data-img="football.png">football</span> and <span class="info-link" data-funfact="The death screams of the bad guys in the original Golden Axe are digitized from screams used in the films First Blood and Conan The Barbarian." data-img="gaming.png">gaming</span>. Apart from my CV, this is where you can find my personal blog, <span class="info-link" data-funfact="None of the Beatles could read or write music." data-img="musicsheet.png">drum transcriptions</span> I write, and other stuff I'd like to share.
+					</span>
+					<br>
+					<div class="social-media">
+						<a href="https://www.facebook.com/paris.mav" target="_blank" class="fa fa-facebook social social-facebook"></a>
+						<a href="https://www.linkedin.com/in/parismavblom/" target="_blank" class="fa fa-linkedin social social-linkedin"></a>
+						<a href="https://twitter.com/parismavblom" target="_blank" class="fa fa-twitter social social-linkedin"></a>
+					</div>
+				</div>
+				
+			</div>
+			<span class="vline"></span>
+			<div class="content">	
+				<div id="home" class="content-item home">
+					<span class="content-header-big">Home</span>
+					<span class="content-paragraph">
+						Hi, My name's Paris, welcome to my website. <span class="desktop-only">You can mouse over the <span class="info-link" data-funfact="An average sized orange contains 69.7 mg of vitamin C." data-img="orange.png">orange</span> colored texts and see what happens. </span> 
+
+						I was born in <span class="info-link" data-funfact="Thessaloniki was named after Alexander the Great's sister." data-img="thessaloniki.jpg">Thessaloniki</span>, on October 12, 1987. My dad's Greek and my mom's Dutch, so I've been raised bilingual. 
+					</span>
+					<span class="content-paragraph">
+						I have a <span class="info-link" data-funfact="Most cats sleep around 16 hours a day. I envy that." data-img="cat.png">cat</span>, his name is Kira. 
+						My favourite bands are <span class="info-link" data-funfact="Led Zeppelin completed their debut album in under 30 hours." data-img="ledzep.png">Led Zeppelin</span>, <span class="info-link" data-funfact="Ronnie James Dio replaced Ozzy Osbourne in Black Sabbath." data-img="dio.png">Dio</span> and <span class="info-link" data-funfact="The band took the name Dire Straits because it represented their financial condition in the early days." data-img="direstraits.png">Dire Straits</span>. I'm a football fan, I support <span class="info-link" data-funfact="ΠΑΟΚ ξερωγώ, ξερωγώ εντάξει." data-img="paok.png">PAOK</span>, and my favourite footballer of all time is <span class="info-link" data-funfact="He's the first ever French player to receive a red card in a World Cup match." data-img="zidane.png">Zinedine Zidane</span>. I've also been playing Tennis since I was 7 years old, still a huge fan of <span class="info-link" data-funfact="His mother emigrated from Sparta, Greece." data-img="sampras.png">Pete Sampras</span>, and still can't decide whether <span data-funfact='After winning his 1st Wimbledon title in 2003, a cow was gifted to him, named "Juliette".' class="info-link" data-img="federer.png">Roger Federer</span> or <span class="info-link" data-funfact="Yeah, that's actually the guy from the underwear store." data-img="borg.jpg">Bjorn Borg</span> is the GOAT. -As of July 16 2017, it's Federer.-
+					</span>
+					<span class="content-paragraph">
+						I also like traveling, I've been to most European countries but I still haven't been to <span class="info-link" data-funfact="Volvo is the only swedish word I know." data-img="sweden.png">Sweden</span>, <span class="info-link" data-funfact="Portugal is named after its 2nd largest city, Porto, the Latin name of which was Portus Cale." data-img="portugal.png">Portugal</span> and <span class="info-link" data-funfact="Leprechauns don't exist." data-img="ireland.png">Ireland</span>. I'd like to go there. I would aslo like to visit <span class="info-link" data-funfact="Argentina is the eighth-largest country in the world. Yeah, I just found out too." data-img="argentina.png">Argentina</span>, <span class="info-link" data-funfact="Japan is made up of 6,852 islands" data-img="japan.png">Japan</span> and <span class="info-link" data-funfact="Over 120 languages are spoken in Tanzania." data-img="tanzania.jpg">Tanzania's national parks</span>.
+					</span>
+					<span class="content-paragraph">
+						The first video game I ever played was <span class="info-link" data-funfact="Assassin's Creed was born from Prince of Persia." data-img="princeofpersia.png">Prince of Persia</span>. I played that on my mom's first computer, running <span class="info-link" data-funfact="Official support for Windows 3.11 ended on December 31, 2001." data-img="win311.png">Windows 3.11</span>. Nowadays, I mostly play <span class="info-link" data-funfact="Hearthstone is the only game where I prefer to watch others play than play it myself." data-img="hearthstone.png">Hearthstone</span> and <span class="info-link" data-funfact="Counter-Strike originally began as a mod of Half-Life in 1999." data-img="counterstrike.jpg">Counter Strike: Global Offensive</span>.
+					</span>
+					<span class="content-paragraph">
+						In this website, you will find my CV, along with my personal blog (which might not be entirely in English), Programming-related content such as code snippets and/or projects, and Drum sheets (transcriptions) I write.
+					</span>
+					<span class="content-paragraph"></span>
+				</div>
+				<div id="cv" class="content-item cv">
+					<span class="content-header-big">Curriculum Vitae</span>
+					<span class="content-paragraph">
+						I graduated in 2012, from the Faculty of Informatics of the Aristotle University of Thessaloniki, and got my MSc. in Artificial Intelligence two years later, at the University of Amsterdam. My Master Thesis's title is "Towards Personalised Gaming via Facial Expression Recognition" and was accepted as a full paper at <a href="http://www.aaai.org/Press/Proceedings/aiide14.php" class="leftbar-link" target="_blank">AIIDE 2014</a> and as a demo session at <a href="http://bnaic2014.org/" target="_blank" class="leftbar-link">BNAIC 2014</a>. Also, I won the <span class="info-link" data-funfact="I have this in my room." data-img="award.png">Dutch Young Researcher Award</span> for 2014.
+						Right now, I live and work in Tilburg as a Ph.D. candidate, for the <a href="https://www.nwo.nl/en/research-and-results/research-projects/i/02/28502.html" target="_blank" class="leftbar-link">Data2Game</a> project. 
+					</span>
+					<span class="content-header-small">Who I've worked with</span>
+					<ul class="list-items">
+						<li class="list-single-item"><a href="http://www.connecteddreams.com/" target="_blank" class="leftbar-link">Connected Dreams</a></li>
+						<li class="list-single-item"><a href="http://metrica-sports.com/" target="_blank" class="leftbar-link">Metrica Sports</a></li>
+						<li class="list-single-item"><a href="http://www.i-tainment.com/" target="_blank" class="leftbar-link">i-Tainment</a></li>
+						<li class="list-single-item"><a href="http://mysquare.world/welcome/" target="_blank" class="leftbar-link">mysquare.world</a></li>
+						<li class="list-single-item"><a href="http://www.kyklostherapy.gr/" target="_blank" class="leftbar-link">Kyklostherapy Webinars</a></li>
+						<li class="list-single-item"><a href="http://www1.med.auth.gr/depts/lomi/" target="_blank" class="leftbar-link">Lomi</a></li>
+					</ul>
+					<span class="content-header-small">Programming Languages I've used</span>
+						<ul class="list-items">
+							<li class="list-single-item">Javascript</li>
+							<li class="list-single-item">Java</li>
+							<li class="list-single-item">Python</li>
+							<li class="list-single-item">HTML</li>
+							<li class="list-single-item">CSS</li>
+							<li class="list-single-item">C++</li>
+							<li class="list-single-item">C</li>
+							<li class="list-single-item">Matlab</li>
+						</ul>
+					<span class="content-header-small">Frameworks I've used</span>
+						<ul class="list-items">
+							<li class="list-single-item">Cordova/Phonegap</li>
+							<li class="list-single-item">JQuery/JQuery Mobile</li>
+							<li class="list-single-item">Node.js</li>
+							<li class="list-single-item">OpenCV</li>
+							<li class="list-single-item">JavaFX</li>
+							<li class="list-single-item">WEKA</li>
+							<li class="list-single-item">Apache Hadoop</li>
+							<li class="list-single-item">Handlebars.js</li>
+							<li class="list-single-item">Highcharts.js</li>
+							<li class="list-single-item">Express.js</li>
+							<li class="list-single-item">N3.js</li>
+							<li class="list-single-item">rdflib.js</li>
+							<li class="list-single-item">PyQt v4</li>
+							<li class="list-single-item">Bootstrap</li>
+						</ul>
+					<form class="download-button" method="get" target="_blank" action="cv.pdf">
+						<button type="submit">Download CV pdf</button>
+						<span class="download-button-alert">There is a button here, just in case</span>
+					</form>
+				</div>
+				<div id="blog" class="content-item blog">
+					<span class="content-header-big">Blog</span>
+					<div class="content-blog-item">
+						<div class="content-blog-title" data-id="koufala-dimiourge" id="blogpost">
+							<span class="content-blog-title-date">January 14, 2018</span>
+							<span class="content-blog-title-text">Κουφάλα Δημιουργέ...</span>
+							<span class="content-blog-title-icon fa fa-caret-down"></span>
+						</div>
+						<span class="content-blog-text hidden">
+							Αγαπητέ Τζιμάκο,<br>
+Ευχαριστώ για τις ημέρες που κολλούσε το κεφάλι του μπαμπά μου και τραγουδούσε "Φυσική Ιστορία", ώρες ατελείωτες, ώπα είπα λέω και ώπα είπα λέω και έλεγα, πού θα πάει ρε πούστη θα σταματήσει κάποια στιγμή... Και να 'σαι σίγουρος οτι σε 20-30 χρόνια θα με βρίζει ο γιός μου για τον ίδιο λόγο.<br>
+Ευχαριστώ για την πρώτη φορά που είδα γυμνή στριπτιτζού στο Μύλο το 2001, που μας πήγε ο Σάββας, και με το φιλαράκι μου το Θανάση είχαμε μείνει κάγκελο.<br>
+Ευχαριστώ για τις παραστάσεις στο πρίνσιπαλ 2005 & 2006 που πίναμε τα σίβας το ένα πίσω απ' τ' άλλο, και αποφάσισα οτι όποτε και να έρθει ο Πανούσης Θεσσαλονίκη, δε το χάνω με τίποτα.<br>
+Ευχαριστώ για τα καλοκαίρια που γυρνούσαμε με το Διονύση και το Σάκη και ακούγαμε Νεοέλληνα non-stop, και ας μή σε γουστάρουν πλέον.<br>
+Ευχαριστώ για τη τζίφρα και τη φωτογραφία στο Κύτταρο το 2015, τουλάχιστον πρόλαβα να σε γνωρίσω απο κοντά.<br>
+Ευχαριστώ για τα βράδια στην Αθήνα που με τον ψηλό γυρνούσαμε πιωμένοι τραγουδώντας (γκαρίζοντας) "και βλέπω κάτι όνειρα, πως ξαφνικά γίνομαι άντρας, και βλέπω κάτι όνειρα, οτι δεν είμαι πια μαλάκας" και μας χαζεύανε απ' το δίπλα αυτοκίνητο.<br>
+Ευχαριστώ που μου έμαθες οτι έχει πλάκα να προκαλείς και μετά να γελάς με τις αντιδράσεις, το απολαμβάνω. Πέθανες και ακόμα μαλώνουν για το Νταλάρα, την Πάολα και τη συνέντευξη στην Ελληνοφρένεια.<br>
+Ευχαριστώ γιατί είσαι ο μόνος καλλιτέχνης που πραγματικά δε θυμάμαι πόσες φορές είδα live.<br>
+Ευχαριστώ γιατί χωρίς εσένα δεν θα είχα φάκελο "Ελληνικά" στο αυτοκίνητο.<br>
+Ευχαριστώ για το χορευτικό στο "βρε μελαχρινάκι" απ' τον δράκουλα τον Εξαρχείων που ανακάλυψα την προηγούμενη βδομάδα.<br>
+Ευχαριστώ για τις αναμνήσεις.<br>
+Αντίο Τζιμάκο, θα μου λείψεις.
+						<span class="content-blog-text-bottom"></span>
+						</span>
+					</div>
+				</div>
+				<div id="programming" class="content-item programming">
+					<span class="content-header-big">Programming</span>
+					<span class="content-paragraph">
+						I created this website within a few hours. If you liked it, you can download the source code by pressing the button below. Or you can just right click anywhere here and "View page source". I will try to keep this section updated with nerd stuff.
+					</span>
+					<span class="content-paragraph">
+						I liked my friend George's <a href="http://www.georgiosmethenitis.com" target="_blank" class="leftbar-link">website</a> so props to him. Check it out, he's doing some interesting stuff for his PhD.
+					</span>
+					<form class="download-button" method="get" target="_blank" action="src.zip">
+						<button type="submit">Download source zip</button>
+						<span class="download-button-alert">There is another button here, just in case</span>
+					</form>
+				</div>
+				<div id="drums" class="content-item drums">
+					<span class="content-header-big">Drums</span>
+					<span class="content-paragraph">
+						I've been playing the drums since October 2016, and I really enjoy it. I hope I can play a full <span class="info-link" data-funfact="Still waiting for a new album." data-img="tool.jpg">Tool</span> song at some point. For the time being, I play some <span class="info-link" data-funfact="Can we please bring Brian Johnson back?" data-img="acdc.jpg">AC/DC</span> songs which I find to be quite easier.
+					</span>
+					<span class="content-paragraph">
+						In this section, I will publish drum transcriptions that I write on my own. Of course, I review them with my teacher but beware, they're not perfect. Anyway, I do this beacause I found it hard to find free drum sheet music on the Internet, and I really believe there should be more. Also, trying to write drum transcriptions is a good form of exercise! 
+					</span>
+					<span class="content-paragraph">
+						Here's my teacher's <a href="https://soundcloud.com/hrisoutsouris" class="leftbar-link" target="_blank">soundcloud</a>, go take a look. I really admire his knowledge on rock music.
+					</span>
+					<div class="content-paragraph">
+						I would like to share some youtube channels I've been following since (or even before) I started playing drums. Those guys have been an inspiration to me, and I strongly recommend you check out their content. Here are some of my favorite videos:
+						<ul class="list-items-nodot">
+							<li class="list-single-item">
+								<iframe width="560" height="315" src="https://www.youtube.com/embed/I8K4HkjChE4"  allowfullscreen></iframe>
+							</li>
+							<li class="list-single-item">
+								<iframe width="560" height="315" src="https://www.youtube.com/embed/E0lY3kpFzd4" allowfullscreen></iframe>
+							</li>
+							<li class="list-single-item">
+								<iframe width="560" height="315" src="https://www.youtube.com/embed/3-0O-05rC2c"  allowfullscreen></iframe>
+							</li>
+							<li class="list-single-item">
+								<iframe width="560" height="315" src="https://www.youtube.com/embed/org6OVoMdF8" allowfullscreen></iframe>
+							</li>
+							<li class="list-single-item">
+								<iframe width="560" height="315" src="https://www.youtube.com/embed/-Emut0-LYJE"  allowfullscreen></iframe>
+							</li>
+						</ul>
+					</div>
+					<span class="content-paragraph">
+						To write my transcriptions, I used <a href="https://musescore.org/en/2.0" class="leftbar-link" target="_blank">Musescore 2.0</a>. It's free and it's easy to use. 
+					</span>
+					<span class="content-header-small">My drum transcriptions</span>
+					<ul class="list-items">
+						<li class="list-single-item"> AC/DC - "Let me put my love into you" Drum Sheet
+							<form class="download-button" method="get" target="_blank" action="acdc-let_me_put_my_love_into_you.pdf">
+								<button type="submit">Download Transcription</button>
+							</form>
+						</li>
+						<li class="list-single-item"> Boston - "More than a feeling" Drum Sheet
+							<form class="download-button" method="get" target="_blank" action="Boston_-_More_Than_a_Feeling.pdf">
+								<button type="submit">Download Transcription</button>
+							</form>
+						</li>
+						<li class="list-single-item"> Led Zeppelin - "Communication Breakdown" Drum Sheet
+							<form class="download-button" method="get" target="_blank" action="Led_Zeppelin_-_Communication_Breakdown.pdf">
+								<button type="submit">Download Transcription</button>
+							</form>
+						</li>
+						<li class="list-single-item"> Mad Season - "Artificial Red" Drum Sheet
+							<form class="download-button" method="get" target="_blank" action="Mad_Season_-_Artificial_Red.pdf">
+								<button type="submit">Download Transcription</button>
+							</form>
+						</li>
+						<li class="list-single-item"> Τρύπες - "Ταξιδιάρα Ψυχή" Drum Sheet
+							<form class="download-button" method="get" target="_blank" action="tripes-taxidiara_psixi.pdf">
+								<button type="submit">Download Transcription</button>
+							</form>
+						</li>
+					</ul>
+
+					<span class="content-header-small">Other Websites with free drum transcriptions</span>
+					<ul class="list-items">
+						<li class="list-single-item">
+							<a href="http://www.drummingmatt.com/drum_transcriptions.php" class="leftbar-link" target="_blank">drummingmatt.com</a>
+						</li>
+						<li class="list-single-item">
+							<a href="http://www.robertferrell.com/charts.html#nil" class="leftbar-link" target="_blank">robertferrell.com</a>
+						</li>
+						<li class="list-single-item">
+							<a href="http://www.drumiverse.com/" class="leftbar-link" target="_blank">Drumiverse</a>
+						</li>
+						<li class="list-single-item">
+							<a href="http://thedrumninja.com/drum-transcriptions/" class="leftbar-link" target="_blank">Drum Ninja</a>
+						</li>
+					</ul>
+
+					<span class="content-paragraph">If you would like to donate to me, to help me keep this website updated with new transcriptions &amp; content, please visit my <a href="https://paypal.me/parismavblom" class="leftbar-link" target="_blank">PayPal</a>. Donations are not needed, but always appreciated!
+					Cheers!
+					</span>
+					<br><br><br>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>
