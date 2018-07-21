@@ -20,7 +20,7 @@
 				},
 				success: function(data){
 					console.log(data);
-					$.each(data, function(k,v){
+					$.each(data.members, function(k,v){
 						row = $("#table").find('tbody').append($('<tr>'));
 						row.append($('<td>')).text(v.name);
 						row.append($('<td>')).text(v.tag);
