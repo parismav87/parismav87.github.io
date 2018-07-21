@@ -6,7 +6,23 @@
 		<meta charset="UTF-8">
 		<link rel="icon" href="favicon.ico" type="image/x-icon">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-		
+		<style>
+			table {
+				font-family: arial, sans-serif;
+				border-collapse: collapse;
+				width: 100%;
+			}
+
+			td, th {
+				border: 1px solid #dddddd;
+				text-align: left;
+				padding: 8px;
+			}
+
+			tr:nth-child(even) {
+				background-color: #dddddd;
+			}
+		</style>
 		<script>
 			key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTI1MiwiaWRlbiI6IjM3MDI4ODE4ODgwNTIxODMwNSIsIm1kIjp7fSwidHMiOjE1MzIxNzUwODYzOTF9.DI1SIjwl3YpImGiE0R0GMnXRLaVPq1x_fKkJRbprlc8"
 			
@@ -30,7 +46,7 @@
 	</head>
 
 	<body>
-		<table id="table" style="border: 1px solid black;">
+		<table id="table">
 			<tr>
 				<th>player name</th>
 			</tr>
