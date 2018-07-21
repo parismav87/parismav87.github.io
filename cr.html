@@ -16,7 +16,6 @@
 			td, th {
 				text-align: left;
 				padding: 8px;
-				width: 100%;
 			}
 
 			tr:nth-child(even) {
@@ -25,6 +24,7 @@
 		</style>
 		<script>			
 			key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTI1MiwiaWRlbiI6IjM3MDI4ODE4ODgwNTIxODMwNSIsIm1kIjp7fSwidHMiOjE1MzIxNzUwODYzOTF9.DI1SIjwl3YpImGiE0R0GMnXRLaVPq1x_fKkJRbprlc8"
+			players = {}
 			
 			$.ajax({
 				type: "GET",
@@ -37,6 +37,7 @@
 				success: function(data){
 					console.log(data);
 					$.each(data.members, function(k,v){
+					players[v.tag] = {}
 						var markup = "<tr><td>" + v.name + "</td><td>"+v.role+"</td><td>"+v.trophies+"</td><td>"+v.donations+"</td><td>"+v.donationsReceived+"</td></tr>";
 						$("#table tbody").append(markup);
 					})
@@ -53,6 +54,10 @@
 				<th>Trophies</th>
 				<th>Donations Given</th>
 				<th>Donations Received</th>
+				<th>Donations Received</th>
+				<th>War Battles Cards</th>
+				<th>War Battles Played</th>
+				<th>War Battles Wins</th>
 			</tr>
 		</table>
 		
