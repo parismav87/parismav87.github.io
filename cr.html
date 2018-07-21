@@ -21,7 +21,7 @@
 				success: function(data){
 					console.log(data);
 					$.each(data.members, function(k,v){
-						var markup = "<tr><td>" + v.name + "</td><td>" + v.tag + "</td></tr>";
+						var markup = "<tr style='border:1px solid black;'><td>" + v.name + "</td><td id='lele'></td></tr>";
 						$("#table tbody").append(markup);
 					})
 				}
@@ -33,7 +33,6 @@
 		<table id="table" style="border: 1px solid black;">
 			<tr>
 				<th>player name</th>
-				<th>tag</th> 
 			</tr>
 		</table>
 		
