@@ -38,7 +38,7 @@
 					console.log(data);
 					$.each(data.members, function(k,v){
 					players[v.tag] = {}
-						var markup = "<tr><td>" + v.name + "</td><td>"+v.role+"</td><td>"+v.trophies+"</td><td>"+v.donations+"</td><td>"+v.donationsReceived+"</td></tr>";
+						var markup = "<tr><td>" + v.name + "</td><td>"+v.role+"</td><td>"+v.trophies+"</td><td>"+v.donations+"</td><td>"+v.donationsReceived+"</td><td id='"+v.tag+"'_wbc></td><td id='"+v.tag+"'_wbp></td><td id='"+v.tag+"'_wbw></td></tr>";
 						$("#table tbody").append(markup);
 					})
 				}
@@ -53,7 +53,6 @@
 				<th>Role</th>
 				<th>Trophies</th>
 				<th>Donations Given</th>
-				<th>Donations Received</th>
 				<th>Donations Received</th>
 				<th>War Battles Cards</th>
 				<th>War Battles Played</th>
