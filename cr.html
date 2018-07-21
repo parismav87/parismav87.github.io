@@ -57,9 +57,9 @@
 						success: function(data){
 							$.each(data, function(k,v){
 								$.each(v.participants, function(kk, vv){
-									players[vv.tag].cards += vv.cardsEarned
-									players[vv.tag].played += 1
-									players[vv.tag].wins += vv.wins								
+									players[vv.tag]["cards"] += vv.cardsEarned
+									players[vv.tag]["played"] += 1
+									players[vv.tag]["wins"] += vv.wins								
 								})
 							})
 							
