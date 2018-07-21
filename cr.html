@@ -3,9 +3,6 @@
 	<head>
 		<title>Greece clan stats</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-  crossorigin="anonymous"></script>
 		<meta charset="UTF-8">
 		<link rel="icon" href="favicon.ico" type="image/x-icon">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
@@ -26,9 +23,7 @@
 				background-color: #dddddd;
 			}
 		</style>
-		<script>
-			$('tbody').sortable();
-			
+		<script>			
 			key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTI1MiwiaWRlbiI6IjM3MDI4ODE4ODgwNTIxODMwNSIsIm1kIjp7fSwidHMiOjE1MzIxNzUwODYzOTF9.DI1SIjwl3YpImGiE0R0GMnXRLaVPq1x_fKkJRbprlc8"
 			
 			$.ajax({
@@ -42,7 +37,7 @@
 				success: function(data){
 					console.log(data);
 					$.each(data.members, function(k,v){
-						var markup = "<tr><td>" + v.name + "</td><td id='lele'></td></tr>";
+						var markup = "<tr><td>" + v.name + "</td><td>"+v.role+"</td><td>"+v.trophies+"</td><td>"+v.donations+"</td><td>"+v.donationsReceived+"</td></tr>";
 						$("#table tbody").append(markup);
 					})
 				}
@@ -53,7 +48,11 @@
 	<body>
 		<table id="table">
 			<tr>
-				<th>player name</th>
+				<th>Player Name</th>
+				<th>Role</th>
+				<th>Trophies</th>
+				<th>Donations Given</th>
+				<th>Donations Received</th>
 			</tr>
 		</table>
 		
