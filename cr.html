@@ -20,13 +20,23 @@
 				},
 				success: function(data){
 					console.log(data);
+					for (var m in data.members) {
+						row = $("#table").append($('<tr>'));
+						row.append($('<td>')).text(m.name);
+						row.append($('<td>')).text(m.tag);
+					}
 				}
 			})
 		</script>
 	</head>
 
 	<body>
-		hello
+		<table id="#table">
+			<tr>
+				<th>player name</th>
+				<th>tag</th> 
+			</tr>
+		</table>
 		
 	</body>
 </html>
