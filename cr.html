@@ -9,11 +9,15 @@
 		
 		<script>
 			key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTI1MiwiaWRlbiI6IjM3MDI4ODE4ODgwNTIxODMwNSIsIm1kIjp7fSwidHMiOjE1MzIxNzUwODYzOTF9.DI1SIjwl3YpImGiE0R0GMnXRLaVPq1x_fKkJRbprlc8"
-			data = {
-				auth: key
-			}
-			$.get("https://api.royaleapi.com/clan/UQYGLP", data, function(d){
-				console.log(d);
+			
+			$.ajax({
+				type: "GET",
+				url: "https://api.royaleapi.com/clan/UQYGLP",
+				dataType: 'json',
+				async: true,
+				headers: {
+					"auth": key
+				},
 			})
 		</script>
 	</head>
