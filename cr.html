@@ -36,7 +36,11 @@
 				},
 				success: function(data){
 					$.each(data.members, function(k,v){
-						players[v.tag] = {}
+						players[v.tag] = {
+							cards: 0,
+							played: 0,
+							wins: 0
+						}
 						var markup = "<tr><td>" + v.name + "</td><td>"+v.role+"</td><td>"+v.trophies+"</td><td>"+v.donations+"</td><td>"+v.donationsReceived+"</td><td id='"+v.tag+"'_wbc></td><td id='"+v.tag+"'_wbp></td><td id='"+v.tag+"'_wbw></td></tr>";
 						$("#table tbody").append(markup);
 
@@ -51,7 +55,19 @@
 							"auth": key
 						},
 						success: function(data){
-							console.log(data);
+							$.each(data, function(k,v){
+								$.each(v.participants, function(kk, vv){
+									players[vv.tag].cards += vv.cardsEarned
+									players[vv.tag].played += 1
+									players[vv.tag].wins += vv.wins								
+								})
+							})
+							
+							$.each(players, function(k,v){
+								$("#"+k+"wbc").text(v.cards)
+								$("#"+k+"wbp").text(v.played + " / " + "10")
+								$("#"+k+"wbw").text(v.wins + " / " + v.played)
+							})
 						}
 					})
 					
