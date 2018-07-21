@@ -3,6 +3,9 @@
 	<head>
 		<title>Greece clan stats</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
 		<meta charset="UTF-8">
 		<link rel="icon" href="favicon.ico" type="image/x-icon">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
@@ -24,6 +27,8 @@
 			}
 		</style>
 		<script>
+			$('tbody').sortable();
+			
 			key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTI1MiwiaWRlbiI6IjM3MDI4ODE4ODgwNTIxODMwNSIsIm1kIjp7fSwidHMiOjE1MzIxNzUwODYzOTF9.DI1SIjwl3YpImGiE0R0GMnXRLaVPq1x_fKkJRbprlc8"
 			
 			$.ajax({
