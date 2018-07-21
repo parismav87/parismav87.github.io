@@ -21,9 +21,8 @@
 				success: function(data){
 					console.log(data);
 					$.each(data.members, function(k,v){
-						row = $("#table").find('tbody').append($('<tr>'));
-						row.append($('<td>')).text(v.name);
-						row.append($('<td>')).text(v.tag);
+						var markup = "<tr><td>" + v.name + "</td><td>" + v.tag + "</td></tr>";
+						$("#table tbody").append(markup);
 					})
 				}
 			})
