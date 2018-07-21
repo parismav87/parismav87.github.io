@@ -41,7 +41,7 @@
 							played: 0,
 							wins: 0
 						}
-						var markup = "<tr><td>" + v.name + "</td><td>"+v.role+"</td><td>"+v.trophies+"</td><td>"+v.donations+"</td><td>"+v.donationsReceived+"</td><td id='"+v.tag+"'_wbc></td><td id='"+v.tag+"'_wbp></td><td id='"+v.tag+"'_wbw></td></tr>";
+						var markup = "<tr><td>" + v.name + "</td><td>"+v.role+"</td><td>"+v.trophies+"</td><td>"+v.donations+"</td><td>"+v.donationsReceived+"</td><td id='"+v.tag+"_wbc'></td><td id='"+v.tag+"_wbp'></td><td id='"+v.tag+"_wbw'></td></tr>";
 						$("#table tbody").append(markup);
 
 					})
@@ -66,9 +66,9 @@
 							})
 							
 							$.each(players, function(k,v){
-								$("#"+k+"wbc").text(v.cards)
-								$("#"+k+"wbp").text(v.played + " / " + "10")
-								$("#"+k+"wbw").text(v.wins + " / " + v.played)
+								$("#"+k+"_wbc").text(v.cards)
+								$("#"+k+"_wbp").text(v.played + " / " + "10")
+								$("#"+k+"_wbw").text(v.wins + " / " + v.played)
 							})
 						}
 					})
