@@ -21,7 +21,7 @@
 				success: function(data){
 					console.log(data);
 					for (var m in data.members) {
-						row = $("#table").append($('<tr>'));
+						row = $("#table").find('tbody').append($('<tr>'));
 						row.append($('<td>')).text(m.name);
 						row.append($('<td>')).text(m.tag);
 					}
