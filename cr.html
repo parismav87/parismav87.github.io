@@ -17,6 +17,7 @@
 				border: 1px solid #dddddd;
 				text-align: left;
 				padding: 8px;
+				width: 100%;
 			}
 
 			tr:nth-child(even) {
@@ -37,7 +38,7 @@
 				success: function(data){
 					console.log(data);
 					$.each(data.members, function(k,v){
-						var markup = "<tr style='border:1px solid black;'><td>" + v.name + "</td><td id='lele'></td></tr>";
+						var markup = "<tr><td>" + v.name + "</td><td id='lele'></td></tr>";
 						$("#table tbody").append(markup);
 					})
 				}
