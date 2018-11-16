@@ -1,0 +1,246 @@
+{
+    "gameId": 2908877212,
+    "mapId": 12,
+    "gameMode": "ARAM",
+    "gameType": "MATCHED_GAME",
+    "gameQueueConfigId": 450,
+    "participants": [
+        {
+            "teamId": 100,
+            "spell1Id": 32,
+            "spell2Id": 4,
+            "championId": 115,
+            "profileIconId": 3496,
+            "summonerName": "BLVCK CR33D",
+            "bot": false,
+            "summonerId": 76303221,
+            "gameCustomizationObjects": [],
+            "perks": {
+                "perkIds": [
+                    8229,
+                    8226,
+                    8210,
+                    8237,
+                    8134,
+                    8139
+                ],
+                "perkStyle": 8200,
+                "perkSubStyle": 8100
+            }
+        },
+        {
+            "teamId": 100,
+            "spell1Id": 4,
+            "spell2Id": 32,
+            "championId": 9,
+            "profileIconId": 3791,
+            "summonerName": "BiatchHoes",
+            "bot": false,
+            "summonerId": 53945257,
+            "gameCustomizationObjects": [],
+            "perks": {
+                "perkIds": [
+                    8214,
+                    8275,
+                    8210,
+                    8236,
+                    8313,
+                    8347
+                ],
+                "perkStyle": 8200,
+                "perkSubStyle": 8300
+            }
+        },
+        {
+            "teamId": 100,
+            "spell1Id": 13,
+            "spell2Id": 4,
+            "championId": 45,
+            "profileIconId": 539,
+            "summonerName": "itzpyromonsterr",
+            "bot": false,
+            "summonerId": 24284745,
+            "gameCustomizationObjects": [],
+            "perks": {
+                "perkIds": [
+                    8229,
+                    8224,
+                    8233,
+                    8237,
+                    8313,
+                    8410
+                ],
+                "perkStyle": 8200,
+                "perkSubStyle": 8300
+            }
+        },
+        {
+            "teamId": 100,
+            "spell1Id": 4,
+            "spell2Id": 32,
+            "championId": 432,
+            "profileIconId": 1114,
+            "summonerName": "Minty Blue Bit",
+            "bot": false,
+            "summonerId": 58200103,
+            "gameCustomizationObjects": [],
+            "perks": {
+                "perkIds": [
+                    8229,
+                    8226,
+                    8210,
+                    8236,
+                    8135,
+                    8126
+                ],
+                "perkStyle": 8200,
+                "perkSubStyle": 8100
+            }
+        },
+        {
+            "teamId": 100,
+            "spell1Id": 4,
+            "spell2Id": 13,
+            "championId": 99,
+            "profileIconId": 3180,
+            "summonerName": "nightlife39",
+            "bot": false,
+            "summonerId": 42092560,
+            "gameCustomizationObjects": [],
+            "perks": {
+                "perkIds": [
+                    8229,
+                    8226,
+                    8210,
+                    8236,
+                    8347,
+                    8345
+                ],
+                "perkStyle": 8200,
+                "perkSubStyle": 8300
+            }
+        },
+        {
+            "teamId": 200,
+            "spell1Id": 4,
+            "spell2Id": 32,
+            "championId": 245,
+            "profileIconId": 10,
+            "summonerName": "Chadchinshin",
+            "bot": false,
+            "summonerId": 44840773,
+            "gameCustomizationObjects": [],
+            "perks": {
+                "perkIds": [
+                    8112,
+                    8143,
+                    8138,
+                    8135,
+                    8224,
+                    8210
+                ],
+                "perkStyle": 8100,
+                "perkSubStyle": 8200
+            }
+        },
+        {
+            "teamId": 200,
+            "spell1Id": 4,
+            "spell2Id": 32,
+            "championId": 497,
+            "profileIconId": 1596,
+            "summonerName": "Harmless",
+            "bot": false,
+            "summonerId": 34595084,
+            "gameCustomizationObjects": [],
+            "perks": {
+                "perkIds": [
+                    8214,
+                    8224,
+                    8234,
+                    8237,
+                    8473,
+                    8242
+                ],
+                "perkStyle": 8200,
+                "perkSubStyle": 8400
+            }
+        },
+        {
+            "teamId": 200,
+            "spell1Id": 32,
+            "spell2Id": 4,
+            "championId": 37,
+            "profileIconId": 3590,
+            "summonerName": "Nixaura",
+            "bot": false,
+            "summonerId": 51849910,
+            "gameCustomizationObjects": [],
+            "perks": {
+                "perkIds": [
+                    8214,
+                    8226,
+                    8233,
+                    8237,
+                    9111,
+                    8014
+                ],
+                "perkStyle": 8200,
+                "perkSubStyle": 8000
+            }
+        },
+        {
+            "teamId": 200,
+            "spell1Id": 4,
+            "spell2Id": 32,
+            "championId": 21,
+            "profileIconId": 3860,
+            "summonerName": "Spennardd",
+            "bot": false,
+            "summonerId": 92941064,
+            "gameCustomizationObjects": [],
+            "perks": {
+                "perkIds": [
+                    8229,
+                    8226,
+                    8233,
+                    8237,
+                    9111,
+                    8014
+                ],
+                "perkStyle": 8200,
+                "perkSubStyle": 8000
+            }
+        },
+        {
+            "teamId": 200,
+            "spell1Id": 32,
+            "spell2Id": 4,
+            "championId": 60,
+            "profileIconId": 3776,
+            "summonerName": "Arabelle",
+            "bot": false,
+            "summonerId": 39994856,
+            "gameCustomizationObjects": [],
+            "perks": {
+                "perkIds": [
+                    8229,
+                    8226,
+                    8210,
+                    8237,
+                    8304,
+                    8347
+                ],
+                "perkStyle": 8200,
+                "perkSubStyle": 8300
+            }
+        }
+    ],
+    "observers": {
+        "encryptionKey": "yOXSZ3UKKixItx16d0WfJw/b3k+ce4Rg"
+    },
+    "platformId": "NA1",
+    "bannedChampions": [],
+    "gameStartTime": 1542112893084,
+    "gameLength": 1034
+}
