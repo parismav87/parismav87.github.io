@@ -5,10 +5,12 @@
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 	<link rel="stylesheet" href="lolbot/style.css">
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script  src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="  crossorigin="anonymous"></script>	
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script src="lolbot/functions.js"></script>
 	<script src="lolbot/script.js"></script>
 	<title>LoLBot</title
 ></head>
@@ -16,43 +18,38 @@
 
 <body>
 	<div class="container position-absolute h-100 w-100 visible" id="page1">
-		<div class="row align-items-center">
+		<div class="row align-items-center h-100">
+			<div class="col-3">
+			</div>
 			<div class="col">
-				<div class="container align-middle">
-					<form>
-					  	<div class="form-group">
-						    <label for="input-summoner-name">Summoner name</label>
-						    <input type="email" class="form-control" id="input-summoner-name"  placeholder="Enter summoner name">
-						    <!-- aria-describedby="help-summoner-name" -->
-						    <!-- <small id="help-summoner-name" class="form-text text-muted"></small>-->
-					  	</div>
-					  	<div class="row justify-content-between">
-					  		<div class="col-2">
-						  		<div class="dropdown">
-							  		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-server-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							    		Select Server
-							  		</button>
-								  	<div class="dropdown-menu" aria-labelledby="dropdown-server-button">
-									    <a class="dropdown-item" href="#">EUNE</a>
-									    <a class="dropdown-item" href="#">EUW</a>
-									    <a class="dropdown-item" href="#">NA</a>
-								  	</div>
-								</div>
-							</div>
-							<div class="col-2">
-								<button type="submit" class="btn btn-block btn-primary" id="button-search">Search</button>
-							</div>
-						</div>	  		
-					</form>
+				<div class="row">
+					<input type="text" id="page-1-name-input" class="form-control mx-auto">
+					<select id="page-1-server-select" class="custom-select w-25 position-absolute page1-select-server border border-primary">
+						<option selected value="NA1">NA</option>
+						<option value="EUW1">EUW</option>
+						<option value="EUN1">EUNE</option>
+					</select>
 				</div>
+				<div class="row mt-1">
+					<button type="button" id="button-search" class="btn-primary btn mx-auto w-50">Search</button>
+				</div>
+			</div>
+			<div class="col-3">
 			</div>
 		</div>
 	</div>
 
 
 	<div class="container position-absolute invisible h-100 w-100" id="page2">
-		<div class="row">
-			<h3 class="mx-auto">You're playing vs.</h3>
+		<div class="row mt-1 align-items-center">
+			<div class="col-2">
+				<i class="fa fa-chevron-left p-1" id="page2-button-back"></i>
+			</div>
+			<div class='col'>
+				<h3 class="mx-auto page2-title">You're playing vs.</h3>
+			</div>
+			<div class="col-2">
+			</div>
 		</div>
 		<div class="row mt-3">
 			<div class="col" id="summoner-1">

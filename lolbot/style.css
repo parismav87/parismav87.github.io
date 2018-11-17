@@ -6,3 +6,11 @@ html, body {
 .container{
 	max-width: 100% !important;
 }
+
+.page2-title{
+	width: fit-content;
+}
+
+.page1-select-server{
+	right: 0;
+}
