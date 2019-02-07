@@ -1,0 +1,286 @@
+<!DOCTYPE HTML>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="c3.min.css">
+	<script  src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="  crossorigin="anonymous"></script>	
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="c3.min.js"></script>
+	<script src="progressbar.js"></script>
+	<script src="functions.js"></script>
+	<script src="script.js"></script>
+	<title>D2G Trainer Interface</title>
+</head>
+
+
+<body>
+	<div class="modal fade" id="modal">
+		<div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      	<div class="modal-header">
+			        <h5 class="modal-title" id="modalTitle">Settings</h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+			          	<span aria-hidden="true">&times;</span>
+			        </button>
+		      	</div>
+		      	<div class="modal-body">
+		      		<div class="col">
+		      			<div class="input-group mb-3">
+						  	<div class="input-group-prepend">
+						    	<span class="input-group-text">Measurements per minute</span>
+						  	</div>
+						  	<input type="number" class="form-control measurements-per-minute" aria-label="Measurements per minute" placeholder="10" value="10" min="1" max="60" align="right">
+						</div>
+						<div class="input-group mb-3">
+						  	<div class="input-group-prepend">
+						    	<span class="input-group-text">Interval between server requests (sec)</span>
+						  	</div>
+						  	<input type="number" class="form-control server-interval" aria-label="Interval between server requests (sec)" placeholder="1" value="1" min="1" max="60" align="right">
+						</div>
+						<div class="input-group mb-3">
+						  	<div class="input-group-prepend">
+						    	<span class="input-group-text">Chart range (min)</span>
+						  	</div>
+						  	<input type="number" class="form-control chart-range" aria-label="Chart range (min)" placeholder="1" value="1" min="1" max="20" align="right">
+						</div>
+						<div class="input-group mb-3">
+						  	<div class="input-group-prepend">
+						    	<span class="input-group-text">Participant ID</span>
+						  	</div>
+						  	<input type="text" class="form-control participant-id" aria-label="Participant ID" placeholder="vrt-1" value="vrt-1" align="right">
+						</div>
+		      		</div>
+		      	</div>	
+		      	<div class="modal-footer">
+			        <button type="button" class="btn btn-primary modal-save" data-dismiss="modal">Save</button>
+		      	</div>
+		    </div>
+	 	</div>
+	</div>
+	<div class="container position-absolute h-100 w-100 visible">
+		<div class="row w-100 h-10 top-bar p-2 justify-content-between">
+			<div class="col-2 h-100 p-2">
+				<div class="row w-100 h-75 justify-content-center">
+					<h3>DATA</h3><h3 class="numbertwo">2</h3><h3>GAME</h3>
+				</div>
+				<div class="row w-100 h-25 justify-content-center">
+					<span class="andromeda">ANDROMEDA</span>
+				</div>
+			</div>
+			<div class="col-4 h-100">
+				<div class="row w-100 h-100 p-2">
+					<div class="col h-100 w-auto">
+						<div class="row h-75 w-100 justify-content-center startbutton topbutton">
+							<i class="fas fa-play"></i>
+						</div>
+						<div class="row h-25 w-100 justify-content-center">
+							<h6>START</h6>
+						</div>
+					</div>
+					<div class="col h-100 w-auto">
+						<div class="row h-75 w-100 justify-content-center stopbutton stopbutton-active topbutton">
+							<i class="fas fa-stop"></i>
+						</div>
+						<div class="row h-25 w-100 justify-content-center">
+							<h6>STOP</h6>
+						</div>
+					</div>
+					<div class="col h-100 w-auto">
+						<div class="row h-75 w-100 justify-content-center resetbutton topbutton">
+							<i class="fas fa-undo"></i>
+						</div>
+						<div class="row h-25 w-100 justify-content-center">
+							<h6>RESET</h6>
+						</div>
+					</div>
+					<div class="col h-100 w-auto">
+						<div class="row h-75 w-100 justify-content-center savebutton topbutton">
+							<i class="fas fa-save"></i>
+						</div>
+						<div class="row h-25 w-100 justify-content-center">
+							<h6>SAVE</h6>
+						</div>
+					</div>
+					<div class="col h-100 w-auto">
+						<div class="row h-75 w-100 justify-content-center settingsbutton topbutton" data-toggle="modal" data-target="#modal">
+							<i class="fas fa-cog"></i>
+						</div>
+						<div class="row h-25 w-100 justify-content-center">
+							<h6>SETTINGS</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row h-30 w-100 p-2 pt-3 m-0">
+			<div class="col w-100 p-0">
+				<div class="row w-100 m-0">
+					<div class="col-3 h-15 m-auto subtitle">
+						<h5>PHYSIOLOGICAL</h5>
+					</div>
+				</div>
+				<div class="row h-90 w-100 m-0">
+					<div class="col w-30">
+						<div class="row" id="chartHR"></div>
+						<!-- <div class="row">
+							<div class="col subtitle">
+								<h6>SKIN CONDUCTANCE</h6>
+							</div>
+						</div> -->
+					</div>
+					<div class="col w-30">
+						<div class="row" id="chartSC"></div>
+						<!-- <div class="row">
+							<div class="col subtitle">
+								<h6>HEARTRATE</h6>
+							</div>
+						</div> -->
+					</div>
+					<div class="col w-30">
+						<!-- <div class="row" id="chartHRV"></div> -->
+						<div class="row">
+							<div class="col">
+								<div class="row justify-content-center">
+									<span class="bignumber current-hr">-</span>
+								</div>
+								<div class="row justify-content-center">
+									<h6>CURRENT BPM</h6>
+								</div>
+							</div>
+							<div class="col">
+								<div class="row justify-content-center">
+									<span class="bignumber current-sc">-</span>
+								</div>
+								<div class="row justify-content-center">
+									<h6>CURRENT SKIN CONDUCTANCE</h6>
+								</div>
+							</div>
+						</div>
+						<!-- <div class="row">
+							<div class="col subtitle">
+								<h6>HEARTRATE VARIABILITY</h6>
+							</div>
+						</div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr/>
+		<div class="row h-30 w-100 p-2 m-0">
+			<div class="col w-100 p-0">
+				<div class="row w-100 m-0">
+					<div class="col-3 h-15 m-auto subtitle">
+						<h5>IN-GAME</h5>
+					</div>
+				</div>
+				<div class="row w-100 h-90 m-0">
+					<div class="col-4 h-100">
+						<div class="row h-90" id="chartDilemmas"></div>
+						<!-- <div class="row h-10">
+							<h6>DILEMMA ANSWERS</h6>
+						</div> -->
+					</div>
+					<div class="col h-80">
+						<div class="row w-100 h-100 m-0">
+							<div class="col h-100 w-30">
+								<div class="row w-100 h-90 m-0 justify-content-center">
+									<div id="dilemmaBar" class="progressbar"></div>
+								</div>
+								<div class="row w-100 h-10 m-0 justify-content-center">
+									<h6>8/10 DILEMMAS</h6>
+								</div>
+							</div>
+							<div class="col h-100 w-30">
+								<div class="row w-100 h-90 m-0 justify-content-center">
+									<div id="infoBar" class="progressbar"></div>
+								</div>
+								<div class="row w-100 h-10 m-0 justify-content-center">
+									<h6>30/50 INFOS</h6>
+								</div>
+							</div>
+							<div class="col h-100 w-30">
+								<div class="row w-100 h-90 m-0 justify-content-center">
+									<div id="timeBar" class="progressbar"></div>
+								</div>
+								<div class="row w-100 h-10 m-0 justify-content-center">
+									<h6>7:30</h6>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr/>
+		<div class="row h-20 p-2 m-0">
+			<div class="col w-100 h-100 m-0">
+				<div class="row h-10 w-100 m-0">
+					<div class="col-3 h-15 m-auto subtitle">
+						<h5>ADAPTATIONS</h5>
+					</div>
+				</div>
+				<div class="row h-80 w-100 pt-4 pb-1 justify-content-between">
+					<div class="col-5">
+						<div class="row h-70">
+							<textarea class="w-100 custommessage" cols="50" rows="4" placeholder="Enter a custom popup message..."></textarea>
+						</div>
+						<div class="row justify-content-between pt-1">
+							<div class="col p-0 m-0">
+								<div class="row h-100">
+									<h6 class="m-auto">CUSTOM POPUP MESSAGE</h6>
+								</div>
+							</div>
+							<div class="col fit-content m-0 p-0">
+								<button class="btn btn-outline-dark btn-purple-nogroup">SEND</button>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="row h-90">
+							<div class="btn-group m-auto" role="group">
+							  <button type="button" class="btn btn-outline-dark btn-purple btn-purple-active">SLOW</button>
+							  <button type="button" class="btn btn-outline-dark btn-purple">NORMAL</button>
+							  <button type="button" class="btn btn-outline-dark btn-purple">RAPID</button>
+							</div>
+						</div>
+						<div class="row h-10">
+							<h6 class="m-auto">PACE</h6>
+						</div>
+					</div>
+					<div class="col">
+						<div class="row h-90">
+							<div class="btn-group m-auto" role="group">
+							  <button type="button" class="btn btn-secondary btn-purple btn-purple-active">LIGHT</button>
+							  <button type="button" class="btn btn-secondary btn-purple">MEDIUM</button>
+							  <button type="button" class="btn btn-secondary btn-purple">HEAVY</button>
+							</div>
+						</div>
+						<div class="row h-10">
+							<h6 class="m-auto">WORKLOAD</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+		<!-- <div class="column align-items-top h-100">
+			<div class="row w-50 h-50">
+				<div id="chartSC"></div>
+			</div>
+			<div class="row w-50 h-50">
+				<div id="chartHR"></div>
+			</div>
+		</div> -->
+	</div>
+
+</body>
+</html>
