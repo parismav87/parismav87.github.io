@@ -14,3 +14,28 @@ html, body {
 .page1-select-server{
 	right: 0;
 }
+
+.text-role{
+	width: fit-content;
+}
+
+.text-analyze{
+	width: fit-content;
+}
+
+.summoner{
+	overflow-y: scroll !important;
+	overflow-x: hidden !important;
+}
+
+.summoner::-webkit-scrollbar { 
+    display: none; 
+}
+
+h6{
+	font-size: 0.8vw !important;
+}
+
+.h-60{
+	max-height: 65% !important;
+}
