@@ -1,12 +1,35 @@
 $(document).ready(function(){
 	generateCharts()
 	generateBars()
+	getUsers()
 
 	$(".startbutton").on("click", function(evt){
 		if(!$(this).hasClass("startbutton-active")){
 			$(this).addClass("startbutton-active")
 			$(".stopbutton").removeClass("stopbutton-active")
 			startStream()
+		}
+	})
+
+	$(".btn-send-message").on("click", function(evt){
+		sendMessage($(".custommessage").val())
+	})
+
+	$("body").on("click", ".dropdown-item-users", function(evt){
+		var fullName = $(this).text()
+		$(".select-user-name").text(fullName)
+		$.each($(".dropdown-item-users"), function(k,v){
+			$(v).removeClass("dropdown-item-users-selected")
+		})
+		$(this).addClass("dropdown-item-users-selected")
+		participantID = $(this).data("id")
+		// console.log(participantID)
+		var imageURL = $(this).data("image")
+		// console.log(imageURL)
+		if(imageURL!="undefined"){
+			$(".avatar").attr("src", imageURL)
+		} else {
+			$(".avatar").attr("src", "avatar.png")
 		}
 	})
 
@@ -19,6 +42,8 @@ $(document).ready(function(){
 	$(".stopbutton").on("click", function(evt){
 		if(!$(this).hasClass("stopbutton-active")){
 			$(this).addClass("stopbutton-active")
+			var d = new Date();
+			sessionEnd = d.getTime();
 			clearInterval(serverCallsInterval);
 			$(".startbutton").removeClass("startbutton-active")
 		} 
@@ -26,11 +51,9 @@ $(document).ready(function(){
 
 	$(".savebutton").on("click", function(evt){
 		if(participantID != null){
-			var d = new Date();
-			sessionEnd = d.getTime(); //save session startTime
 			saveSession(sessionStart, sessionEnd, participantID)
 		} else {
-			alert("Please specify participant ID in the settings page before saving.")
+			alert("Please select a user.")
 		}
 		
 	})
@@ -44,8 +67,8 @@ $(document).ready(function(){
 	$(".modal-save").on("click", function(evt){
 		filter = $(".measurements-per-minute").val()
 		chartRange = $(".chart-range").val() * 60000 // millis
-		serverInterval = $(".server-interval").val() * 1000 //millis
-		participantID = $(".participant-id").val()
+		// serverInterval = $(".server-interval").val() * 1000 //millis
+		// participantID = $(".participant-id").val()
 		if($(".startbutton").hasClass("startbutton-active")){
 			startStream()
 		}

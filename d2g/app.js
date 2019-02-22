@@ -1,10 +1,11 @@
-const express = require('express')
+const express = require('express');
 const fs = require('fs');
 const app = express()
 const port = 3000
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const csv = require("fast-csv");
+const stomp = require('stompjs');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -14,6 +15,25 @@ app.use(function(req, res, next) {
   next();
 });
 
+
+var client = stomp.overWS('ws://localhost:61623');
+client.connect('admin', 'password', function(succ){
+	// console.log(succ)
+	console.log("Connected to Scorm.")
+	var subscription = client.subscribe("/topic/ddm", function(message){
+		if (message.body) {
+	     readMessage(message.body)
+	   } else
+	   {
+	     console.log("got empty message");
+	   }
+	}, {});
+});
+
+
+
+
+
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost:27017/data2gameDB", {useNewUrlParser: true});
 var db = mongoose.connection;
@@ -22,7 +42,7 @@ db.once('open', function callback () {
     console.log('Conntected To Mongo Database');
 });
 
-var schema = new mongoose.Schema({
+var sessionSchema = new mongoose.Schema({
   	startTime: Number,
   	endTime: Number,
   	participantID: String,
@@ -31,14 +51,28 @@ var schema = new mongoose.Schema({
   		skinConductance: [{timestamp: Number, value: Number}]
   	},
   	gameData: [{timestamp: Number, value: Number}],
-  	adaptations: [{timestamp: Number, value: Number}]
+  	adaptations: [{timestamp: Number, value: String, adaptationType: String}]
 });
 
-var Session = mongoose.model("Session", schema, "sessions");
+var Session = mongoose.model("Session", sessionSchema, "sessions");
+
+var userSchema = new mongoose.Schema({
+  	firstName: String,
+  	middleName: String,
+  	lastName: String,
+  	participantID: String,
+  	age: Number,
+  	gender: String,
+  	imageURL: String
+});
+
+var User = mongoose.model("User", userSchema, "users");
 
 demo = true
 heartRate = []
 skinConductance = []
+messageCounter = 2
+adaptations = []
 
 if(demo){
 	var count = 0
@@ -72,6 +106,84 @@ if(demo){
  	});
 }
 
+
+app.post('/sendMessage', function(req,res){
+	response = {}
+	var msg = req.body.message
+	client.send('/topic/ddm', {}, JSON.stringify({"busMessageType": "changeMessageText", "messageRef": "MESSAGE_tutor_0", "text": msg,  "operator": "set"}))
+	client.send('/topic/ddm', {}, JSON.stringify({"busMessageType": "changeIndicatorValue", "indicatorRef": "INDICATOR_tutorMessage", "value": messageCounter, "operator": "set"}))
+	response['statusCode'] = 200
+	response['success'] = true
+	messageCounter+=1
+	var now = new Date().getTime()
+	adaptations.push({
+		"timestamp": now,
+		"value": msg,
+		"adaptationType": "CUSTOM_MESSAGE"
+	})
+	res.send(response)
+})
+
+app.post('/newUser', function(req, res){
+
+	var response = {}
+	if(typeof(req.body.participantID)=="undefined"){
+		response.statusCode = 400
+		response.success = false
+		res.send(response)
+		return
+	} else {
+		// console.log(req.body.data)
+		var fname = req.body.firstName
+		var mname = req.body.middleName
+		var lname = req.body.lastName
+		var age = req.body.age
+		var gender = req.body.gender
+		var participantID = req.body.participantID
+		var imageURL = req.body.imageURL
+
+		var user = {
+			"firstName": fname,
+			"middleName" : mname,
+			"lastName" : lname,
+			"age": age,
+			"gender": gender,
+			"participantID": participantID,
+			"imageURL": imageURL
+		}
+
+		// console.log(session)
+
+		var u = new User(user);
+	 	u.save()
+		    .then(item => {
+		      	response.statusCode = 200
+				response.success = true
+				res.send(response)
+		    })
+		    .catch(err => {
+		      	response.statusCode = 400
+				response.success = false
+				res.send(response)
+		    });
+	}
+	
+
+})
+
+app.get('/getUsers', function(req, res){
+	// console.log("trying to get users")
+	response = {}
+	var query = {}
+
+	User.find(query, function(err, data){
+        // console.log(data); 
+        response["statusCode"] = 200
+        response["success"] = true
+        response["data"] = data
+        res.send(response)
+    })
+})
 
 app.get('/getSC', function(req, res){
 
@@ -210,6 +322,7 @@ app.get('/resetSession', function(req, res){
 app.get('/saveSession', function(req, res){
 	// console.log(req.header('startTime'))	
 	// console.log(skinConductance)
+	// console.log(req)
 	var response = {}
 	if(typeof(req.header('startTime'))=="undefined" || isNaN(parseInt(req.header('startTime'))) || typeof(req.header('endTime'))=="undefined" || isNaN(parseInt(req.header('endTime'))) || typeof(req.header('participantID'))=="undefined"){
 		response.statusCode = 400
@@ -231,7 +344,7 @@ app.get('/saveSession', function(req, res){
 			"skinConductance": skinConductance
 		},
 		"gameData": heartRate,
-		"adaptations": heartRate
+		"adaptations": adaptations
 	}
 
 	// console.log(session)
@@ -246,6 +359,7 @@ app.get('/saveSession', function(req, res){
 			res.send(response)
 	    })
 	    .catch(err => {
+	    	// console.log(err)
 	      	response.statusCode = 400
 			response.success = false
 			res.send(response)
@@ -388,4 +502,10 @@ function mean(table){
 function resetSession(){
 	heartRate = []
 	skinConductance = []
+	messageCounter = 2
+	adaptations = []
+}
+
+function readMessage(msg){
+	console.log(msg)
 }

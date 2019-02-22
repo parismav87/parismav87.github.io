@@ -122,6 +122,7 @@ function saveSession(start, end, id){
 		"endTime": end,
 		"participantID": id
 	}
+	console.log(headers)
 	$.ajax({
 		type: "GET",
 		url: url,
@@ -177,8 +178,58 @@ function resetSession(){
 	})
 }
 
+function addNewUser(user){
+	var url = "http://localhost:3000/newUser"
+	$.ajax({
+		type: "POST",
+		url: url,
+		data: {
+			"firstName" : user.firstName,
+			"middleName" : user.middleName,
+			"lastName" : user.lastName,
+			"age" : user.age,
+			"gender" : user.gender,
+			"participantID" : user.participantID,
+			"imageURL": user.imageURL
+		},
+		success: function(data){
+			console.log("newUser", data)
+		}
+	})
+}
+
+function sendMessage(msg){
+	var url = "http://localhost:3000/sendMessage"
+	$.ajax({
+		type: "POST",
+		url: url,
+		data: {
+			"message": msg
+		},
+		success: function(data){
+			console.log(data)
+		}
+	})
+}
+
+function getUsers(){
+	var url = "http://localhost:3000/getUsers"
+	$.ajax({
+		type: "GET",
+		url: url,
+		success: function(data){
+			$.each(data.data, function(k,v){
+				console.log(v)
+				var element = '<span class="dropdown-item dropdown-item-users" data-id="'+v.participantID+'" data-image="'+v.imageURL+'" data-age="'+v.age+'" data-gender="'+v.gender+'" >'+v.firstName+' '+v.middleName+' '+ v.lastName+'</span>'
+				$(element).appendTo($(".dropdown-users"))
+			})
+		}
+	})
+}
+
 function startStream(){
 	clearInterval(serverCallsInterval);
+	sessionStart = new Date().getTime();
 	serverCallsInterval = setInterval(function(){
 		var d = new Date();
 		var end = d.getTime();
@@ -255,13 +306,6 @@ function generateCharts(){
 	    bindto: '#chartHR',
 	    legend: {
 	    	hide: true
-	    },	
-	    size: {
-	    	// width: 1024,
-	    	// height: 640
-	    },
-	    padding: {
-
 	    },
 	    data: {
 	      json: heartRate,

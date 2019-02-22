@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="c3.min.css">
+	<script  src="https://unpkg.com/popper.js@1.14.7/dist/umd/popper.min.js" crossorigin="anonymous"></script>	
 	<script  src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="  crossorigin="anonymous"></script>	
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -35,28 +36,28 @@
 		      		<div class="col">
 		      			<div class="input-group mb-3">
 						  	<div class="input-group-prepend">
-						    	<span class="input-group-text">Measurements per minute</span>
+						    	<span class="input-group-text">Accuracy (measurements per minute)</span>
 						  	</div>
 						  	<input type="number" class="form-control measurements-per-minute" aria-label="Measurements per minute" placeholder="10" value="10" min="1" max="60" align="right">
 						</div>
-						<div class="input-group mb-3">
+						<!-- <div class="input-group mb-3">
 						  	<div class="input-group-prepend">
 						    	<span class="input-group-text">Interval between server requests (sec)</span>
 						  	</div>
 						  	<input type="number" class="form-control server-interval" aria-label="Interval between server requests (sec)" placeholder="1" value="1" min="1" max="60" align="right">
-						</div>
+						</div> -->
 						<div class="input-group mb-3">
 						  	<div class="input-group-prepend">
 						    	<span class="input-group-text">Chart range (min)</span>
 						  	</div>
 						  	<input type="number" class="form-control chart-range" aria-label="Chart range (min)" placeholder="1" value="1" min="1" max="20" align="right">
 						</div>
-						<div class="input-group mb-3">
+						<!-- <div class="input-group mb-3">
 						  	<div class="input-group-prepend">
 						    	<span class="input-group-text">Participant ID</span>
 						  	</div>
 						  	<input type="text" class="form-control participant-id" aria-label="Participant ID" placeholder="vrt-1" value="vrt-1" align="right">
-						</div>
+						</div> -->
 		      		</div>
 		      	</div>	
 		      	<div class="modal-footer">
@@ -74,6 +75,28 @@
 				<div class="row w-100 h-25 justify-content-center">
 					<span class="andromeda">ANDROMEDA</span>
 				</div>
+			</div>
+			<div class="col fit-content h-100 dropdown dropdown-users-wrapper">
+				<div class="row h-100 p-2 justify-content-center dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
+					<div class="col h-100 fit-content">
+						<img src="avatar.png" class="avatar">
+					</div>
+					<div class="col h-100 fit-content ml-2">
+						<div class="row justify-content-center h-100 align-items-center">
+							<span class="select-user-name">Select User</span>
+						</div>
+					</div>
+					<div class="col h-100 fit-content ml-2">
+						<div class="row justify-content-center h-100 align-items-center">
+							<i class="fas fa-chevron-down"></i>
+						</div>
+					</div>
+				</div>
+				<div class="dropdown-menu dropdown-menu-right dropdown-users" aria-labelledby="dropdownMenuButton">
+				    <!-- <a class="dropdown-item" href="#">User 1</a>
+				    <a class="dropdown-item" href="#">User 2</a>
+				    <a class="dropdown-item" href="#">User 3</a> -->
+			  	</div>
 			</div>
 			<div class="col-4 h-100">
 				<div class="row w-100 h-100 p-2">
@@ -121,7 +144,7 @@
 			</div>
 		</div>
 		<div class="row h-30 w-100 p-2 pt-3 m-0">
-			<div class="col w-100 p-0">
+			<div class="col w-100 h-100 p-0">
 				<div class="row w-100 m-0">
 					<div class="col-3 h-15 m-auto subtitle">
 						<h5>PHYSIOLOGICAL</h5>
@@ -175,7 +198,7 @@
 		</div>
 		<hr/>
 		<div class="row h-30 w-100 p-2 m-0">
-			<div class="col w-100 p-0">
+			<div class="col w-100 h-100 p-0">
 				<div class="row w-100 m-0">
 					<div class="col-3 h-15 m-auto subtitle">
 						<h5>IN-GAME</h5>
@@ -239,7 +262,7 @@
 								</div>
 							</div>
 							<div class="col fit-content m-0 p-0">
-								<button class="btn btn-outline-dark btn-purple-nogroup">SEND</button>
+								<button class="btn btn-outline-dark btn-purple-nogroup btn-send-message">SEND</button>
 							</div>
 						</div>
 					</div>

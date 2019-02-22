@@ -19,6 +19,8 @@ h5{
 hr{
 	width:90% !important;
 	background: #efefef;
+	margin-top: 0.5rem !important;
+	margin-bottom: 0.5rem !important;
 }
 
 .numbertwo{
@@ -71,6 +73,14 @@ hr{
 	color: #ffb142 !important;
 }
 
+.dropdown-toggle::after{
+	display: none!important;
+}
+
+.dropdown-users-wrapper{
+	cursor: pointer;
+}
+
 .andromeda{
 	letter-spacing: 5px !important;
 	font-size: 0.8vw !important;
@@ -111,6 +121,11 @@ hr{
 
 .savebutton :hover{
 	color: #ffb142;
+}
+
+.avatar{
+	border-radius: 50%;
+	width: 2.5em !important;
 }
 
 .top-bar{
