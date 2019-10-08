@@ -58,6 +58,30 @@ $(document).ready(function(){
 		
 	})
 
+	$(".btn-slow").on("click", function(evt){
+		changeGameSpeed(0)
+	})
+
+	$(".btn-normal").on("click", function(evt){
+		changeGameSpeed(50)
+	})
+
+	$(".btn-rapid").on("click", function(evt){
+		changeGameSpeed(100)
+	})
+
+	$(".btn-light").on("click", function(evt){
+		changeInfoLoad(0)
+	})
+
+	$(".btn-medium").on("click", function(evt){
+		changeInfoLoad(50)
+	})
+
+	$(".btn-heavy").on("click", function(evt){
+		changeInfoLoad(100)
+	})
+
 	$(".btn-purple").on("click", function(evt){
 		evt.preventDefault();
 		evt.stopPropagation();
@@ -69,9 +93,9 @@ $(document).ready(function(){
 		chartRange = $(".chart-range").val() * 60000 // millis
 		// serverInterval = $(".server-interval").val() * 1000 //millis
 		// participantID = $(".participant-id").val()
-		if($(".startbutton").hasClass("startbutton-active")){
-			startStream()
-		}
+		// if($(".startbutton").hasClass("startbutton-active")){
+		// 	startStream()
+		// }
 		// console.log(filter, chartRange, serverInterval)
 	})
 

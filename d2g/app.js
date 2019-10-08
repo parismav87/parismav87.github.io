@@ -15,23 +15,46 @@ app.use(function(req, res, next) {
   next();
 });
 
+// client2 = stomp.overWS('ws://localhost:61623');
+// client2.connect('admin', 'password', function(succ){
+
+// })
 
 var client = stomp.overWS('ws://localhost:61623');
 client.connect('admin', 'password', function(succ){
-	// console.log(succ)
 	console.log("Connected to Scorm.")
-	var subscription = client.subscribe("/topic/ddm", function(message){
-		if (message.body) {
-	     readMessage(message.body)
-	   } else
-	   {
-	     console.log("got empty message");
-	   }
-	}, {});
+	var adviceSubscription = client.subscribe("/topic/advice", function(msg){
+		if(msg.body){
+			parseAdviceMessage(msg.body)
+		} else {
+			console.log("received empty message")
+		}
+	})
+
+	var dilemmaSubscription = client.subscribe("/topic/dilemmas", function(msg){
+		if(msg.body){
+			parseDilemmaMessage(msg.body)
+		} else {
+			console.log("received empty message")
+		} 
+	})
+
+	var gameSubscription = client.subscribe("/topic/game", function(msg){
+		if(msg.body){
+			parseGameMessage(msg.body)
+		} else {
+			console.log("received empty message")
+		}
+	})
+
+	var infoSubscription = client.subscribe("/topic/infos", function(msg){
+		if(msg.body){
+			parseInfoMessage(msg.body)
+		} else {
+			console.log("received empty message")
+		}
+	})
 });
-
-
-
 
 
 mongoose.Promise = global.Promise;
@@ -50,7 +73,7 @@ var sessionSchema = new mongoose.Schema({
   		heartRate: [{timestamp: Number, value: Number}],
   		skinConductance: [{timestamp: Number, value: Number}]
   	},
-  	gameData: [{timestamp: Number, value: Number}],
+  	gameData: [{timestamp: Number, value: Number, gameDataType: String, payload: String}],
   	adaptations: [{timestamp: Number, value: String, adaptationType: String}]
 });
 
@@ -73,6 +96,15 @@ heartRate = []
 skinConductance = []
 messageCounter = 2
 adaptations = []
+gameLogs = []
+gameData = {}
+
+fs.readFile('dilemmas.json', 'utf8', function (err, data) {
+  if (err) throw err;
+  gameData = JSON.parse(data)
+  // console.log(dilemmas)
+});
+
 
 if(demo){
 	var count = 0
@@ -87,7 +119,7 @@ if(demo){
 		   		var h = d[5]
 		   		sc = {
 		   			"timestamp": now,
-		   			"value": parseFloat(s)/1000
+		   			"value": (parseFloat(s)/1000) + parseFloat(Math.random()*10)
 		   		}
 		   		hr = {
 		   			"timestamp": now,
@@ -110,6 +142,7 @@ if(demo){
 app.post('/sendMessage', function(req,res){
 	response = {}
 	var msg = req.body.message
+	console.log(msg)
 	client.send('/topic/ddm', {}, JSON.stringify({"busMessageType": "changeMessageText", "messageRef": "MESSAGE_tutor_0", "text": msg,  "operator": "set"}))
 	client.send('/topic/ddm', {}, JSON.stringify({"busMessageType": "changeIndicatorValue", "indicatorRef": "INDICATOR_tutorMessage", "value": messageCounter, "operator": "set"}))
 	response['statusCode'] = 200
@@ -124,8 +157,38 @@ app.post('/sendMessage', function(req,res){
 	res.send(response)
 })
 
-app.post('/newUser', function(req, res){
+app.post('/changeGameSpeed', function(req,res){
+	response = {}
+	var speed = parseInt(req.body.gameSpeed)
+	client.send('/topic/ddm', {}, JSON.stringify({"busMessageType": "changeIndicatorValue", "indicatorRef": "INDICATOR_gameSpeed", "value": speed, "operator": "set"}))
+	response['statusCode'] = 200
+	response['success'] = true
+	var now = new Date().getTime()
+	adaptations.push({
+		"timestamp": now,
+		"value": speed,
+		"adaptationType": "GAME_SPEED"
+	})
+	res.send(response)
+})
 
+app.post('/changeInfoLoad', function(req,res){
+	response = {}
+	var infoLoad = parseInt(req.body.infoLoad)
+	client.send('/topic/ddm', {}, JSON.stringify({"busMessageType": "changeIndicatorValue", "indicatorRef": "INDICATOR_infoLoad", "value": infoLoad, "operator": "set"}))
+	response['statusCode'] = 200
+	response['success'] = true
+	var now = new Date().getTime()
+	adaptations.push({
+		"timestamp": now,
+		"value": infoLoad,
+		"adaptationType": "INFO_LOAD"
+	})
+	res.send(response)
+})
+
+
+app.post('/newUser', function(req, res){
 	var response = {}
 	if(typeof(req.body.participantID)=="undefined"){
 		response.statusCode = 400
@@ -311,6 +374,15 @@ app.get('/getHR', function(req, res){
 	res.send(response)
 })
 
+app.get('/gameData', function(req, res){
+	var response = {
+		'data': gameData,
+		'statusCode': 200,
+		'success': true
+	}
+	res.send(response)
+})
+
 app.get('/resetSession', function(req, res){
 	resetSession()
 	response = {}
@@ -319,10 +391,40 @@ app.get('/resetSession', function(req, res){
 	res.send(response)
 })
 
+app.get('/baseline', function(req, res){
+	response = {}
+	data = {}
+	temphr = []
+	tempsc = []
+	if(heartRate.length == 0 || skinConductance.length == 0){
+		response.statusCode = 400
+		response.success = false
+		response.data = data
+		res.send(response)
+		return
+	}
+
+	for(let hr of heartRate){
+		temphr.push(hr["value"])
+	}
+
+	for(let sc of skinConductance){
+		tempsc.push(sc["value"])
+	}
+
+	data["hrbaseline"] = mean(temphr)
+	data["scbaseline"] = mean(tempsc)
+
+	// resetSession()
+
+	response.statusCode = 200
+	response.success = true
+	response.data = data
+	res.send(response)
+
+})
+
 app.get('/saveSession', function(req, res){
-	// console.log(req.header('startTime'))	
-	// console.log(skinConductance)
-	// console.log(req)
 	var response = {}
 	if(typeof(req.header('startTime'))=="undefined" || isNaN(parseInt(req.header('startTime'))) || typeof(req.header('endTime'))=="undefined" || isNaN(parseInt(req.header('endTime'))) || typeof(req.header('participantID'))=="undefined"){
 		response.statusCode = 400
@@ -343,11 +445,17 @@ app.get('/saveSession', function(req, res){
 			"heartRate": heartRate,
 			"skinConductance": skinConductance
 		},
-		"gameData": heartRate,
+		"gameData": gameLogs,
 		"adaptations": adaptations
 	}
 
 	// console.log(session)
+	var now = new Date().getTime()
+	var sessionName = 'session-' + now + '.json'
+	fs.writeFile(sessionName, JSON.stringify(session),'utf8', function(err){
+		if (err) throw err;
+	    console.log('saved session log');
+	})
 
 	var s = new Session(session);
  	s.save()
@@ -368,7 +476,6 @@ app.get('/saveSession', function(req, res){
 
 
 app.get('/getSessions', function(req, res){
-
 	response = {}
 	if((typeof(req.header('startTime'))!="undefined" && isNaN(parseInt(req.header('startTime')))) || (typeof(req.header('endTime'))!="undefined" && isNaN(parseInt(req.header('endTime')))) || (typeof(req.header("participantID")) == "undefined" && typeof(req.header("sessionID")) == "undefined" )){
 		response.statusCode = 400
@@ -410,11 +517,7 @@ app.get('/getSessions', function(req, res){
             res.send(response)
 	    });
 	}
-
-	
 })
-
-
 
 
 app.post('/postSC', function(req, res){
@@ -431,20 +534,6 @@ app.post('/postSC', function(req, res){
 				"timestamp": sc.timestamp,
 				"value": sc.value
 			})
-			// scBuffer.push(sc)
-			// if(scBuffer.length==40){
-			// 	var sum = 0
-			// 	var time = 0
-			// 	for(let t of scBuffer){
-			// 		sum+=t.value
-			// 		time+=t.timestamp
-			// 	}
-			// 	skinConductance.push({
-			// 		"timestamp": time/40.0,
-			// 		"value": sum/40.0
-			// 	})
-			// 	scBuffer = []
-			// }
 		}		
 	}
 	response.statusCode = 200
@@ -465,20 +554,6 @@ app.post('/postHR', function(req, res){
 				"timestamp": hr.timestamp,
 				"value": hr.value
 			})
-			// hrBuffer.push(hr)
-			// if(hrBuffer.length==40){ //average every 2 sec
-			// 	var sum = 0
-			// 	var time = 0
-			// 	for(let t of hrBuffer){
-			// 		sum+=t.value
-			// 		time+=t.timestamp
-			// 	}
-			// 	heartRate.push({
-			// 		"timestamp": time/40.0,
-			// 		"value": sum/40.0
-			// 	})
-			// 	hrBuffer = []
-			// }
 		}
 	}
 	response.statusCode = 200
@@ -506,6 +581,124 @@ function resetSession(){
 	adaptations = []
 }
 
-function readMessage(msg){
+function parseAdviceMessage(msg){
 	console.log(msg)
+	var now = new Date().getTime()
+	var obj = {
+		"timestamp": now,
+		"value": parseInt(msg),
+		"gameDataType": "ADVICE_REQUESTED",
+		"payload": null
+	}
+	gameLogs.push(obj)
+
+	for(var d in gameData.dilemmas){
+		// console.log(d)
+		if(gameData.dilemmas[d].dilemmaId == parseInt(msg)){
+			// console.log(dilemmas[d].title)
+			gameData.dilemmas[d].timesAdviceRequested +=1
+			gameData.dilemmas[d].adviceRequested = true
+		}
+	}
+}
+
+function parseDilemmaMessage(msg){
+	// console.log(msg)
+	var now = new Date().getTime()
+	console.log(msg + "--" + now)
+	if(msg.includes("ANSWER")){ // example: ANSWER_1_YES
+		var dilemmaid = msg.split("_")[1]
+		var answer = msg.split("_")[2]
+		var obj = {
+			"timestamp": now,
+			"value": parseInt(dilemmaid),
+			"gameDataType": "DILEMMA_ANSWERED",
+			"payload": answer
+		}
+		gameLogs.push(obj)
+		for(var d in gameData.dilemmas){
+			// console.log(d)
+			if(gameData.dilemmas[d].dilemmaId == parseInt(dilemmaid)){
+				// console.log(dilemmas[d].title)
+				gameData.dilemmas[d].answer = answer
+				gameData.dilemmas[d].answered =  true
+				gameData.dilemmas[d].duration = (now - gameData.dilemmas[d].start) /1000 //millis to seconds
+			}
+		}
+		// console.log(gameData.dilemmas)
+	} else if(msg.includes("START")){ //example: START_1
+		var dilemmaid = msg.split("_")[1]
+		var obj = {
+			"timestamp": now,
+			"value": parseInt(dilemmaid),
+			"gameDataType": "DILEMMA_START",
+			"payload": null
+		}
+		gameLogs.push(obj)
+		for(var d in gameData.dilemmas){
+			// console.log(d)
+			if(gameData.dilemmas[d].dilemmaId == parseInt(dilemmaid)){
+				// console.log(dilemmas[d].title)
+				gameData.dilemmas[d].started = true
+				gameData.dilemmas[d].start= now
+			}
+		}
+		// console.log(gameData.dilemmas)
+	}
+}
+
+function parseGameMessage(msg){
+	// console.log(msg)
+	var now = new Date().getTime()
+	console.log(msg + "--" + now)
+	if(msg.includes("START")){
+		var obj = {
+			"timestamp": now,
+			"value": 0,
+			"gameDataType": "GAME_START",
+			"payload": null
+		}
+		gameLogs.push(obj)
+		gameData.gameStart = now
+	} else { //game end
+		var obj = {
+			"timestamp": now,
+			"value": 0,
+			"gameDataType": "GAME_END",
+			"payload": null
+		}
+		gameLogs.push(obj)
+		gameData.gameEnd = now
+		console.log(gameData)
+	}
+
+}
+
+function parseInfoMessage(msg){
+	console.log(msg)
+	var now = new Date().getTime()
+	var msgArr = msg.split("_") // example: READ_1_1
+	var dilemmaId = parseInt(msgArr[1])
+	var infoId = parseInt(msgArr[2])
+
+	for(var d in gameData.dilemmas){
+		if(gameData.dilemmas[d].dilemmaId == dilemmaId){
+			// console.log(dilemmas[d].title)
+			var dil = gameData.dilemmas[d]
+			for(var i in dil.infos){
+				if(dil.infos[i].infoId == infoId){
+					var obj = {
+						"timestamp": now,
+						"value": infoId,
+						"gameDataType": "INFO_READ",
+						"payload": null
+					}
+					gameLogs.push(obj)
+					dil.infos[i].read = true
+					dil.infos[i].timesRead +=1
+				}
+			}
+		}
+	}
+
 }

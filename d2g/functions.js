@@ -1,59 +1,13 @@
-// skinConductance = [
-// 	{
-// 	"timestamp": 1548065591000,
-// 	"value": 5
-// 	},
-// 	{
-// 	"timestamp": 1548065618000, 
-// 	"value": 4
-// 	},
-// 	{
-// 	"timestamp": 1548065768000,
-// 	"value": 6
-// 	},
-// 	{
-// 	"timestamp": 1548065868000,
-// 	"value": 5
-// 	},
-// 	{
-// 	"timestamp": 1548065968000,
-// 	"value": 10
-// 	}
-// ]
 
-dilemmaAnswers = [
-	{
-		"dilemmaTitle": "Save the Queen",
-		"time": 60,
-		"answer": "YES"
-	},
-	{
-		"dilemmaTitle": "Nuke Them",
-		"time": 40,
-		"answer": "NO"
-	},
-	{
-		"dilemmaTitle": "Play Tennis",
-		"time": 30,
-		"answer": "NO"
-	},
-	{
-		"dilemmaTitle": "Cats or Dogs",
-		"time": 70,
-		"answer": "YES"
-	},
-	{
-		"dilemmaTitle": "Playstation or Xbox",
-		"time": 60,
-		"answer": "NO"
-	}
-]
-
+dilemmaAnswers = []
+gameStart = null
+gameEnd = null
 heartRate = []
 skinConductance = []
 heartRateVariability = []
+appended = [false,false,false,false,false,false,false,false]
 
-filter = 10 //measurements per minute
+filter = 60 //measurements per minute
 chartRange = 120000 //milliseconds of charts x axis range 
 serverInterval = 1000 //milliseconds between server calls
 chartSC = null
@@ -64,9 +18,13 @@ sessionStart = null
 sessionEnd = null
 participantID = null
 serverCallsInterval = null
+timelineRight = 20
+baseURL = "http://localhost:3000/"
+// baseURL = "http://8dc4d160.ngrok.io/"
+
 
 function getSkinConductance(start, end){
-	var url = "http://localhost:3000/getSC"
+	var url = baseURL + "getSC"
 	var headers = {
 		"startTime": start,
 		"endTime": end,
@@ -91,7 +49,7 @@ function getSkinConductance(start, end){
 }
 
 function getHeartRate(start, end){
-	var url = "http://localhost:3000/getHR"
+	var url =  baseURL + "getHR"
 	var headers = {
 		"startTime": start,
 		"endTime": end,
@@ -102,7 +60,7 @@ function getHeartRate(start, end){
 		url: url,
 		headers: headers,
 		success: function(data){
-			console.log(data);
+			// console.log(data);
 			heartRate = data['data']
 			// for(let hr of data.data){
 			// 	heartRate.push(hr)
@@ -116,7 +74,7 @@ function getHeartRate(start, end){
 }
 
 function saveSession(start, end, id){
-	var url = "http://localhost:3000/saveSession"
+	var url = baseURL+ "saveSession"
 	var headers = {
 		"startTime": start,
 		"endTime": end,
@@ -162,7 +120,7 @@ function updateChart(newData, chart){
 }
 
 function resetSession(){
-	var url = "http://localhost:3000/resetSession"
+	var url = baseURL + "resetSession"
 	$.ajax({
 		type: "GET",
 		url: url,
@@ -179,7 +137,7 @@ function resetSession(){
 }
 
 function addNewUser(user){
-	var url = "http://localhost:3000/newUser"
+	var url = baseURL + "newUser"
 	$.ajax({
 		type: "POST",
 		url: url,
@@ -199,7 +157,7 @@ function addNewUser(user){
 }
 
 function sendMessage(msg){
-	var url = "http://localhost:3000/sendMessage"
+	var url = baseURL + "sendMessage"
 	$.ajax({
 		type: "POST",
 		url: url,
@@ -213,13 +171,13 @@ function sendMessage(msg){
 }
 
 function getUsers(){
-	var url = "http://localhost:3000/getUsers"
+	var url = baseURL + "getUsers"
 	$.ajax({
 		type: "GET",
 		url: url,
 		success: function(data){
 			$.each(data.data, function(k,v){
-				console.log(v)
+				// console.log(v)
 				var element = '<span class="dropdown-item dropdown-item-users" data-id="'+v.participantID+'" data-image="'+v.imageURL+'" data-age="'+v.age+'" data-gender="'+v.gender+'" >'+v.firstName+' '+v.middleName+' '+ v.lastName+'</span>'
 				$(element).appendTo($(".dropdown-users"))
 			})
@@ -227,7 +185,110 @@ function getUsers(){
 	})
 }
 
+function changeGameSpeed(speed){
+	var url = baseURL + "changeGameSpeed"
+	var data = {
+		gameSpeed: speed
+	}
+	$.ajax({
+		type: "POST",
+		url: url,
+		data: data,
+		success: function(data){
+			console.log(data)
+		}
+	})
+}
+
+function changeInfoLoad(infoLoad){
+	var url = baseURL + "changeInfoLoad"
+	var data = {
+		infoLoad: infoLoad
+	}
+	$.ajax({
+		type: "POST",
+		url: url,
+		data: data,
+		success: function(data){
+			console.log(data)
+		}
+	})
+}
+
+function getBaselineMeasurements(){
+	var url = baseURL + "baseline"
+	$.ajax({
+		type: "GET",
+		url: url,
+		success: function(data){
+			// console.log(data)
+			chartHR.ygrids.add({value: data.data.hrbaseline})
+			chartSC.ygrids.add({value: data.data.scbaseline})
+		}
+	})
+}
+
+function getGameData(){
+	var url = baseURL + "gameData"
+	$.ajax({
+		type: "GET",
+		url: url,
+		success: function(data){
+			dilemmaAnswers = data.data.dilemmas
+			gameStart = data.data.gameStart
+			gameEnd = data.data.gameEnd
+			$.each(dilemmaAnswers, function(k,v){
+				if(v.answered == true && appended[k] == false){
+					appended[k] = true
+					appendDilemmaToTimeline(v)
+				}
+			})
+			updateProgressBars(data)
+		}
+	})
+}
+
+function updateProgressBars(data){
+	var numberDilemmas = 0
+	var numberInfos = 0
+	var totalInfos = 0
+	var numberAdvice = 0
+	var totalAdvice = 0
+	var totalDilemmas = data.data.dilemmas.length
+
+	for(var d in data.data.dilemmas){
+		var dil = data.data.dilemmas[d]
+		if(dil.answered == true){
+			numberDilemmas+=1
+		}
+		if(dil.started == true){
+			totalInfos += dil.infos.length
+			totalAdvice += 1
+			for(var i in dil.infos){
+				var inf = dil.infos[i]
+				if(inf.read == true){
+					numberInfos +=1
+				}
+			}
+			if(dil.adviceRequested==true){
+				numberAdvice+=1
+			}
+		}
+	}
+	$(".progressbar-numberofdilemmas").text(numberDilemmas)
+	$(".progressbar-numberofinfos").text(numberInfos)
+	$(".progressbar-numberofadvice").text(numberAdvice)
+	$(".progressbar-totaldilemmas").text(totalDilemmas)
+	$(".progressbar-totaladvice").text(totalAdvice)
+	$(".progressbar-totalinfos").text(totalInfos)
+	dilemmaBar.animate(numberDilemmas/totalDilemmas)
+	infoBar.animate(numberInfos/totalInfos)
+	adviceBar.animate(numberAdvice/totalAdvice)
+}
+
+
 function startStream(){
+	getBaselineMeasurements()
 	clearInterval(serverCallsInterval);
 	sessionStart = new Date().getTime();
 	serverCallsInterval = setInterval(function(){
@@ -236,8 +297,11 @@ function startStream(){
 		var start = end - chartRange
 	 	getSkinConductance(start, end) 
 	 	getHeartRate(start, end)
+	 	getGameData()
 	}, serverInterval);
 }
+
+
 
 function generateCharts(){
 	chartSC = c3.generate({
@@ -395,69 +459,139 @@ function generateCharts(){
 	//     }
 	// });
 
-	chartDilemmas = c3.generate({
-	    bindto: '#chartDilemmas',
-	    legend: {
-	    	hide: true
-	    },	
-	    size: {
-	    	// width: 1024,
-	    	// height: 640
-	    },
-	    padding: {
+	// chartDilemmas = c3.generate({
+	//     bindto: '#chartDilemmas',
+	//     legend: {
+	//     	hide: true
+	//     },	
+	//     size: {
+	//     	// width: 1024,
+	//     	// height: 640
+	//     },
+	//     padding: {
 
-	    },
-	    data: {
-	    	labels: false,
-	    	json: dilemmaAnswers,
-	    	keys: {
-		      	x: 'dilemmaTitle',
-		      	value: ['time']
-		    },
-		    type: 'line',
-		    color: function(color, d){
-		    	// console.log(dilemmaAnswers[d.index])
-		    	var ans = dilemmaAnswers[d.index]
-		    	// console.log(ans)
-		    	if(typeof ans != "undefined" && ans.answer == "YES"){
-		    		return '#1bc115'
-		    	} else if(typeof ans != "undefined" && ans.answer == "NO"){
-		    		return '#ff3030'
-		    	} else {
-		    		return '#ffb142'
-		    	}
-		    }
-	    },
-	    point:{
-	    	r: 2.5
-	    },
-	    axis: {
-	    	x: {
-	    		label: false,
-	    		padding:{
-	    			right: 1
-	    		},
-	    		type: 'category'
-	    	}, 
-	    	y: {
-	    		show: true,
-	    		label: {
-	    			position: 'outer-top',
-	    			text: 'Time to answer (s)'
-	    		},
-	    		tick: {
-	    			// values: [20, 40, 60 ,80 ,100, 120]
-	    			count: 5
-	    		}
-	    	}
-	    }
-	});
+	//     },
+	//     data: {
+	//     	labels: false,
+	//     	json: dilemmaAnswers,
+	//     	keys: {
+	// 	      	x: 'dilemmaTitle',
+	// 	      	value: ['time']
+	// 	    },
+	// 	    type: 'line',
+	// 	    color: function(color, d){
+	// 	    	// console.log(dilemmaAnswers[d.index])
+	// 	    	var ans = dilemmaAnswers[d.index]
+	// 	    	// console.log(ans)
+	// 	    	if(typeof ans != "undefined" && ans.answer == "YES"){
+	// 	    		return '#1bc115'
+	// 	    	} else if(typeof ans != "undefined" && ans.answer == "NO"){
+	// 	    		return '#ff3030'
+	// 	    	} else {
+	// 	    		return '#ffb142'
+	// 	    	}
+	// 	    }
+	//     },
+	//     point:{
+	//     	r: 2.5
+	//     },
+	//     axis: {
+	//     	x: {
+	//     		label: false,
+	//     		padding:{
+	//     			right: 1
+	//     		},
+	//     		type: 'category'
+	//     	}, 
+	//     	y: {
+	//     		show: true,
+	//     		label: {
+	//     			position: 'outer-top',
+	//     			text: 'Time to answer (s)'
+	//     		},
+	//     		tick: {
+	//     			// values: [20, 40, 60 ,80 ,100, 120]
+	//     			count: 5
+	//     		}
+	//     	}
+	//     }
+	// });
+	
+	var width = $("#chartDilemmasSVG").parent().width()
+	var height = $("#chartDilemmasSVG").parent().height()
 
+	d3.select("#chartDilemmasSVG").append("circle").attr("cy", height/2).attr("cx", timelineRight).attr("r", 3).style("stroke", "black").style("fill", "black");
+	// timelineRight += width*20/100+20
 }
 
+function handleMouseOver(d,i){
+	populateTooltip(d3.select(this))
+	d3.select(this).style("fill", "#ffb142")
+	var offsetHeight = $(".tooltip-custom").height()
+	var offsetWidth = $(".tooltip-custom").width()
+	var top = d3.event.target.getBoundingClientRect().top-offsetHeight-30
+	var left = d3.event.target.getBoundingClientRect().left-offsetWidth/2
+	if(left<=0){
+		left = 10
+	}
+	$(".tooltip-custom").css({
+		visibility: 'visible',
+		top: top,
+		left: left
+	})
+}
+
+function handleMouseOut(d,i){
+	d3.select(this).style("fill", "white")
+	$(".tooltip-custom").css({
+		visibility: 'hidden'
+	})
+}
+
+function appendDilemmaToTimeline(data){
+	console.log(data)
+	var time = Math.floor((data.start+(data.duration*1000) - gameStart)/1000)
+	var width = $("#chartDilemmasSVG").parent().width()
+	var height = $("#chartDilemmasSVG").parent().height()
+	var timePercentage = width*(time/900) //15 mins total time
+	d3.select("#chartDilemmasSVG").append("line").attr("x1", timelineRight).attr("y1", height/2).attr("x2", timePercentage-10).attr("y2", height/2).attr("stroke-width", 1).attr("stroke", "white").transition().duration(2000).style("stroke", "black");
+	d3.select("#chartDilemmasSVG").append("circle").attr("cy", height/2).attr("data-index", data.dilemmaId).attr("cx", timePercentage).attr("r", 10).style("stroke", "white").style("fill", "white").on("mouseover", handleMouseOver).on("mouseout", handleMouseOut).transition().duration(2000).style("stroke", "black");
+	timelineRight = timePercentage+10
+}
+
+function populateTooltip(circle){
+	var ind = parseInt(circle.attr("data-index"))-1
+	var dilemma = dilemmaAnswers[ind]
+	var completionTime = Math.floor((dilemma.start+(dilemma.duration*1000) - gameStart)/1000)
+	$(".tooltip-title").text(dilemma.title)
+	$(".tooltip-content-answer").text(dilemma.answer)
+	$(".tooltip-content-completiontime").text(getTimeString(completionTime))
+	$(".tooltip-content-timerequired").text(getTimeString(Math.floor(dilemma.duration)))
+	if(dilemma.adviceRequested == true){
+		$(".tooltip-content-advice").text("YES")
+	} else {
+		$(".tooltip-content-advice").text("NO")
+	}
+	var infosRead = 0
+	for(var i in dilemma.infos){
+		if(dilemma.infos[i].read == true){
+			infosRead+=1
+		}
+	}
+	$(".tooltip-content-infosread").text(infosRead)
+}
+
+function getTimeString(t){
+	var mins = Math.floor(t/60)
+	var secs = t % 60
+	if(secs<10){
+		return mins+":"+("0"+secs).substring(0,2)
+	}
+	return mins+":"+secs
+}
 
 function generateBars(){
-	var dilemmaBar = new ProgressBar.Circle("#dilemmaBar", {
+	dilemmaBar = new ProgressBar.Circle("#dilemmaBar", {
 	  strokeWidth: 6,
 	  easing: 'easeInOut',
 	  duration: 1400,
@@ -466,9 +600,9 @@ function generateBars(){
 	  trailWidth: 1,
 	  svgStyle: null
 	});
-	dilemmaBar.animate(0.8);
+	// dilemmaBar.animate(0.8);
 
-	var infoBar = new ProgressBar.Circle("#infoBar", {
+	infoBar = new ProgressBar.Circle("#infoBar", {
 	  strokeWidth: 6,
 	  easing: 'easeInOut',
 	  duration: 1400,
@@ -477,9 +611,9 @@ function generateBars(){
 	  trailWidth: 1,
 	  svgStyle: null
 	});
-	infoBar.animate(0.6);
+	// infoBar.animate(0.6);
 
-	var timeBar = new ProgressBar.Circle("#timeBar", {
+	adviceBar = new ProgressBar.Circle("#adviceBar", {
 	  strokeWidth: 6,
 	  easing: 'easeInOut',
 	  duration: 1400,
@@ -488,7 +622,7 @@ function generateBars(){
 	  trailWidth: 1,
 	  svgStyle: null
 	});
-	timeBar.animate(0.5);
+	// adviceBar.animate(0.5);
 
 }
 

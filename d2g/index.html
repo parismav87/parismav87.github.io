@@ -9,8 +9,9 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="c3.min.css">
-	<script  src="https://unpkg.com/popper.js@1.14.7/dist/umd/popper.min.js" crossorigin="anonymous"></script>	
-	<script  src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="  crossorigin="anonymous"></script>	
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="https://unpkg.com/popper.js@1.14.7/dist/umd/popper.min.js" crossorigin="anonymous"></script>	
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="  crossorigin="anonymous"></script>	
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	<script src="https://d3js.org/d3.v5.min.js"></script>
@@ -23,6 +24,51 @@
 
 
 <body>
+	<div class="tooltip-custom">
+		<div class='row w-100 justify-content-center m-0'>
+			<span class="tooltip-title">Dilemma Title</span>
+		</div>
+		<div class="row justify-content-between">
+			<div class="col fit-content">
+				<span class="tooltip-subtitle">Answer</span>
+			</div>
+			<div class="col fit-content">
+				<span class="tooltip-content tooltip-content-answer"></span>
+			</div>
+		</div>
+		<div class="row justify-content-between">
+			<div class="col fit-content">
+				<span class="tooltip-subtitle">Completion time</span>
+			</div>
+			<div class="col fit-content align-self-end">
+				<span class="tooltip-content tooltip-content-completiontime"></span>
+			</div>
+		</div>
+		<div class="row justify-content-between">
+			<div class="col fit-content">
+				<span class="tooltip-subtitle">Time required</span>
+			</div>
+			<div class="col fit-content align-self-end">
+				<span class="tooltip-content tooltip-content-timerequired"></span>
+			</div>
+		</div>
+		<div class="row justify-content-between">
+			<div class="col fit-content">
+				<span class="tooltip-subtitle">Infos Read</span>
+			</div>
+			<div class="col fit-content">
+				<span class="tooltip-content tooltip-content-infosread"></span><span class="tooltip-content">/</span><span class="tooltip-content tooltip-content-totalinfos">5</span>
+			</div>
+		</div>
+		<div class="row justify-content-between">
+			<div class="col fit-content">
+				<span class="tooltip-subtitle">Advice requested</span>
+			</div>
+			<div class="col fit-content">
+				<span class="tooltip-content tooltip-content-advice"></span>
+			</div>
+		</div>
+	</div>
 	<div class="modal fade" id="modal">
 		<div class="modal-dialog" role="document">
 		    <div class="modal-content">
@@ -38,7 +84,7 @@
 						  	<div class="input-group-prepend">
 						    	<span class="input-group-text">Accuracy (measurements per minute)</span>
 						  	</div>
-						  	<input type="number" class="form-control measurements-per-minute" aria-label="Measurements per minute" placeholder="10" value="10" min="1" max="60" align="right">
+						  	<input type="number" class="form-control measurements-per-minute" aria-label="Measurements per minute" placeholder="60" value="60" min="1" max="120" align="right">
 						</div>
 						<!-- <div class="input-group mb-3">
 						  	<div class="input-group-prepend">
@@ -79,7 +125,9 @@
 			<div class="col fit-content h-100 dropdown dropdown-users-wrapper">
 				<div class="row h-100 p-2 justify-content-center dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
 					<div class="col h-100 fit-content">
-						<img src="avatar.png" class="avatar">
+						<div class="row h-100">
+							<img src="avatar.png" class="avatar m-auto">
+						</div>
 					</div>
 					<div class="col h-100 fit-content ml-2">
 						<div class="row justify-content-center h-100 align-items-center">
@@ -116,14 +164,14 @@
 							<h6>STOP</h6>
 						</div>
 					</div>
-					<div class="col h-100 w-auto">
+					<!-- <div class="col h-100 w-auto">
 						<div class="row h-75 w-100 justify-content-center resetbutton topbutton">
 							<i class="fas fa-undo"></i>
 						</div>
 						<div class="row h-25 w-100 justify-content-center">
 							<h6>RESET</h6>
 						</div>
-					</div>
+					</div> -->
 					<div class="col h-100 w-auto">
 						<div class="row h-75 w-100 justify-content-center savebutton topbutton">
 							<i class="fas fa-save"></i>
@@ -205,11 +253,13 @@
 					</div>
 				</div>
 				<div class="row w-100 h-90 m-0">
-					<div class="col-4 h-100">
-						<div class="row h-90" id="chartDilemmas"></div>
-						<!-- <div class="row h-10">
-							<h6>DILEMMA ANSWERS</h6>
-						</div> -->
+					<div class="col-6 h-80 pr-0">
+						<div class="row h-90" id="chartDilemmas">
+							<svg width="100%" height="100%" id="chartDilemmasSVG"></svg>
+						</div>
+						<div class="row w-100 h-10 m-0 justify-content-center">
+							<h6>TIMELINE</h6>
+						</div>
 					</div>
 					<div class="col h-80">
 						<div class="row w-100 h-100 m-0">
@@ -218,7 +268,7 @@
 									<div id="dilemmaBar" class="progressbar"></div>
 								</div>
 								<div class="row w-100 h-10 m-0 justify-content-center">
-									<h6>8/10 DILEMMAS</h6>
+									<h6><span class="progressbar-numberofdilemmas">-</span><span>/</span><span class="progressbar-totaldilemmas">-</span> DILEMMAS</h6>
 								</div>
 							</div>
 							<div class="col h-100 w-30">
@@ -226,15 +276,15 @@
 									<div id="infoBar" class="progressbar"></div>
 								</div>
 								<div class="row w-100 h-10 m-0 justify-content-center">
-									<h6>30/50 INFOS</h6>
+									<h6><span class="progressbar-numberofinfos">-</span><span>/</span><span class="progressbar-totalinfos">-</span> INFOS</h6>
 								</div>
 							</div>
 							<div class="col h-100 w-30">
 								<div class="row w-100 h-90 m-0 justify-content-center">
-									<div id="timeBar" class="progressbar"></div>
+									<div id="adviceBar" class="progressbar"></div>
 								</div>
 								<div class="row w-100 h-10 m-0 justify-content-center">
-									<h6>7:30</h6>
+									<h6><span class="progressbar-numberofadvice">-</span><span>/</span><span class="progressbar-totaladvice">-</span> ADVICE</h6>
 								</div>
 							</div>
 						</div>
@@ -269,9 +319,9 @@
 					<div class="col">
 						<div class="row h-90">
 							<div class="btn-group m-auto" role="group">
-							  <button type="button" class="btn btn-outline-dark btn-purple btn-purple-active">SLOW</button>
-							  <button type="button" class="btn btn-outline-dark btn-purple">NORMAL</button>
-							  <button type="button" class="btn btn-outline-dark btn-purple">RAPID</button>
+							  <button type="button" class="btn btn-slow btn-outline-dark btn-purple btn-purple-active">SLOW</button>
+							  <button type="button" class="btn btn-normal btn-outline-dark btn-purple">NORMAL</button>
+							  <button type="button" class="btn btn-rapid btn-outline-dark btn-purple">RAPID</button>
 							</div>
 						</div>
 						<div class="row h-10">
@@ -281,9 +331,9 @@
 					<div class="col">
 						<div class="row h-90">
 							<div class="btn-group m-auto" role="group">
-							  <button type="button" class="btn btn-secondary btn-purple btn-purple-active">LIGHT</button>
-							  <button type="button" class="btn btn-secondary btn-purple">MEDIUM</button>
-							  <button type="button" class="btn btn-secondary btn-purple">HEAVY</button>
+							  <button type="button" class="btn btn-light btn-secondary btn-purple btn-purple-active">LIGHT</button>
+							  <button type="button" class="btn btn-medium btn-secondary btn-purple">MEDIUM</button>
+							  <button type="button" class="btn btn-heavy btn-secondary btn-purple">HEAVY</button>
 							</div>
 						</div>
 						<div class="row h-10">

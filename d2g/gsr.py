@@ -111,6 +111,7 @@ else:
             ]
          }
 
+
          #calculate bpm for last X seconds: at 20HZ, that's every X*20 measurements.
          numMeasurements = 1200 #60 sec -> each timestamp will calculate for last 60sec 
          allHR.append(PPG_raw)
