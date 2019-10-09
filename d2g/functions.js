@@ -551,6 +551,7 @@ function handleMouseOut(d,i){
 function appendDilemmaToTimeline(data){
 	console.log(data)
 	var time = Math.floor((data.start+(data.duration*1000) - gameStart)/1000)
+	console.log(time)
 	var width = $("#chartDilemmasSVG").parent().width()
 	var height = $("#chartDilemmasSVG").parent().height()
 	var timePercentage = width*(time/900) //15 mins total time

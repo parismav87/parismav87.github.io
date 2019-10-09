@@ -99,7 +99,7 @@ adaptations = []
 gameLogs = []
 gameData = {}
 
-fs.readFile('dilemmas.json', 'utf8', function (err, data) {
+fs.readFile('dilemmasDemo.json', 'utf8', function (err, data) {
   if (err) throw err;
   gameData = JSON.parse(data)
   // console.log(dilemmas)
@@ -107,36 +107,52 @@ fs.readFile('dilemmas.json', 'utf8', function (err, data) {
 
 
 if(demo){
-	var count = 0
-	var now = new Date().getTime()
-	csv.fromPath("sample.csv")
-		.on("data", function(data){
-			if(count >2){
-				count+=1
-				d = data[0].split("\t");
-				// console.log(d)
-		   		var s = d[4]
-		   		var h = d[5]
-		   		sc = {
-		   			"timestamp": now,
-		   			"value": (parseFloat(s)/1000) + parseFloat(Math.random()*10)
-		   		}
-		   		hr = {
-		   			"timestamp": now,
-		   			"value": parseFloat(h)
-		   		}
-		   		skinConductance.push(sc)
-		   		heartRate.push(hr)
-		   		now+=20	
-		} else {
-				count+=1
-				// console.log(data[0].split("\t"))
-			}
-	 	})
-	 	.on("end", function(){
-	     	console.log("done loading demo data");
- 	});
+	var interval = setInterval(function(){
+		var now = new Date().getTime()
+		sc = {
+   			"timestamp": now,
+   			"value": getRandomNumber(2,7)
+   		}
+   		hr = {
+   			"timestamp": now,
+   			"value": parseInt(getRandomNumber(60,100))
+   		}
+   		skinConductance.push(sc)
+		heartRate.push(hr)
+	}, 500)
 }
+
+// if(demo){
+// 	var count = 0
+// 	var now = new Date().getTime()
+// 	csv.fromPath("sample.csv")
+// 		.on("data", function(data){
+// 			if(count >2){
+// 				count+=1
+// 				d = data[0].split("\t");
+// 				// console.log(d)
+// 		   		var s = d[4]
+// 		   		var h = d[5]
+// 		   		sc = {
+// 		   			"timestamp": now,
+// 		   			"value": (parseFloat(s)/1000) + parseFloat(Math.random()*10)
+// 		   		}
+// 		   		hr = {
+// 		   			"timestamp": now,
+// 		   			"value": parseFloat(h)
+// 		   		}
+// 		   		skinConductance.push(sc)
+// 		   		heartRate.push(hr)
+// 		   		now+=20	
+// 		} else {
+// 				count+=1
+// 				// console.log(data[0].split("\t"))
+// 			}
+// 	 	})
+// 	 	.on("end", function(){
+// 	     	console.log("done loading demo data");
+//  	});
+// }
 
 
 app.post('/sendMessage', function(req,res){
@@ -701,4 +717,8 @@ function parseInfoMessage(msg){
 		}
 	}
 
+}
+
+function getRandomNumber(min, max) {
+  return Math.random() * (max - min) + min; //The maximum is exclusive and the minimum is inclusive
 }
