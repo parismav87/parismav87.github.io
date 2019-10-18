@@ -1,0 +1,147 @@
+<html>
+<head>
+	<style>
+		body{
+			background-color: black; 
+		}
+		.mark-wrap{
+			text-align: center;
+			position: absolute;
+			display: table;
+			width: 100%;
+			height: 100%;
+		}
+		
+		.mark{
+			color: white;
+			font-size: 6vw;
+			vertical-align: middle;
+			display: table-cell;
+		}
+		
+		.modal{
+			z-index: 2;
+			background-color: #f0f0f0;
+			width: 30%;
+			height: 50%;
+			top: 25%;
+			left: 35%;
+			position: absolute;
+			border-radius: 10%;
+			border: 2px solid white;
+		}
+		
+		.modal-row{
+			width: 100%;
+			height: 20%;
+			position: absolute;
+			text-align: center;
+			font-size: 1.5vw;
+		}
+		
+		.row1{
+			top: 10%;
+		}
+		
+		.row2{
+			top: 30%;
+			font-size: 1.1vw;
+		}
+		
+		.row3{
+			top: 80%;
+		}
+		
+		.button-start{
+			width: 40%;
+		}
+		
+		.timer-wrap{
+			width: 100%;
+			height: 10%;
+			position: absolute;
+			font-size: 2rem;
+			text-align: center;
+			color: white;
+			display: none;
+		}
+		
+	</style>
+	
+	
+	
+	
+</head>
+
+<body>
+	<div class="bg">
+		<div class="mark-wrap">
+			<span class="mark">+</span>
+		</div>
+		<div class="timer-wrap">
+			<span class="timer"></span>
+		</div>
+		<div class="modal">
+			<div class="modal-row row1">
+				<span class="row-text row-text-left">
+					Duration:
+				</span>
+				<input type="number" name="duration" min="1" max="600" class="input-duration">
+				<span class="row-text row-text-right">seconds</span>
+			</div>
+			<div class="modal-row row2">
+				<input type="checkbox" name="check-timer"  class="check-timer"> Show timer
+			</div>
+			<div class="modal-row row3">
+				<button type="button" class="button-start">Start</button>
+			</div>
+		</div>
+	<div>
+	
+	
+	<script>
+	
+		function addZero(num){
+			var strNum = num.toString()
+			if(num<10){
+				strNum = "0" + strNum;
+			}
+			return strNum
+		}
+		function start(){
+			var duration = parseInt(document.getElementsByClassName("input-duration")[0].value)
+			var checked = document.getElementsByClassName("check-timer")[0].checked
+			document.getElementsByClassName("modal")[0].style.display = "none"
+			var remainingTime = duration-1;
+			var remainingMins = Math.floor(remainingTime/60)
+			var remainingSecs = (remainingTime%60)
+			var remainingMinsStr = remainingMins.toString()
+			var remainingSecsStr = remainingSecs.toString()
+			
+			document.getElementsByClassName("timer")[0].innerHTML = addZero(remainingMinsStr) + ":"  + addZero(remainingSecsStr)
+
+			setTimeout(function(){
+				clearInterval(timerInterval)	
+				if(!checked){
+					alert("Baseline measurement complete.")
+				}
+			}, (duration)*1000); //sec to ms
+			
+			if(checked){
+				document.getElementsByClassName("timer-wrap")[0].style.display = "block"
+				var timerInterval = setInterval(function(){
+					remainingTime-=1
+					var remainingMins = Math.floor(remainingTime/60)
+					var remainingSecs = remainingTime%60
+					document.getElementsByClassName("timer")[0].innerHTML = addZero(remainingMins) + ":"  + addZero(remainingSecs)
+				}, 1000);
+			}
+			
+			
+		}
+		document.getElementsByClassName("button-start")[0].addEventListener("click", start)
+	
+	</script>
+</body>
+
+</html>
