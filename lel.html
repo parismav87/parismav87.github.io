@@ -5,10 +5,13 @@
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 	<link rel="stylesheet" href="lolbot/style.css">
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script  src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="  crossorigin="anonymous"></script>	
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script src="lolbot/functions.js"></script>
 	<script src="lolbot/script.js"></script>
 	<title>LoLBot</title
 ></head>
@@ -16,72 +19,81 @@
 
 <body>
 	<div class="container position-absolute h-100 w-100 visible" id="page1">
-		<div class="row align-items-center">
+		<div class="row align-items-center h-100">
+			<div class="col-3">
+			</div>
 			<div class="col">
-				<div class="container align-middle">
-					<form>
-					  	<div class="form-group">
-						    <label for="input-summoner-name">Summoner name</label>
-						    <input type="email" class="form-control" id="input-summoner-name"  placeholder="Enter summoner name">
-						    <!-- aria-describedby="help-summoner-name" -->
-						    <!-- <small id="help-summoner-name" class="form-text text-muted"></small>-->
-					  	</div>
-					  	<div class="row justify-content-between">
-					  		<div class="col-2">
-						  		<div class="dropdown">
-							  		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-server-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							    		Select Server
-							  		</button>
-								  	<div class="dropdown-menu" aria-labelledby="dropdown-server-button">
-									    <a class="dropdown-item" href="#">EUNE</a>
-									    <a class="dropdown-item" href="#">EUW</a>
-									    <a class="dropdown-item" href="#">NA</a>
-								  	</div>
-								</div>
-							</div>
-							<div class="col-2">
-								<button type="submit" class="btn btn-block btn-primary" id="button-search">Search</button>
-							</div>
-						</div>	  		
-					</form>
+				<div class="row">
+					<input type="text" id="page-1-name-input" class="form-control mx-auto">
+					<select id="page-1-server-select" class="custom-select w-25 position-absolute page1-select-server border border-primary">
+						<option selected value="NA1">NA</option>
+						<option value="EUW1">EUW</option>
+						<option value="EUN1">EUNE</option>
+					</select>
 				</div>
+				<div class="row mt-1">
+					<button type="button" id="button-search" class="btn-primary btn mx-auto w-50">Search</button>
+				</div>
+			</div>
+			<div class="col-3">
 			</div>
 		</div>
 	</div>
 
 
 	<div class="container position-absolute invisible h-100 w-100" id="page2">
-		<div class="row">
-			<h3 class="mx-auto">You're playing vs.</h3>
+		<div class="row mt-1 align-items-center">
+			<div class="col-2">
+				<i class="fa fa-chevron-left p-1" id="page2-button-back"></i>
+			</div>
+			<div class='col'>
+				<h3 class="mx-auto page2-title">You're playing vs.</h3>
+			</div>
+			<div class="col-2">
+			</div>
 		</div>
 		<div class="row mt-3">
-			<div class="col" id="summoner-1">
+			<div class="col">
+				<h3 class="text-info text-role mx-auto">Top</h5>
+			</div>
+			<div class="col">
+				<h3 class="text-info text-role mx-auto">Jungle</h5>
+			</div>
+			<div class="col">
+				<h3 class="text-info text-role mx-auto">Mid</h5>
+			</div>
+			<div class="col">
+				<h3 class="text-info text-role mx-auto">ADC</h5>
+			</div>
+			<div class="col">
+				<h3 class="text-info text-role mx-auto">Support</h5>
+			</div>
+		</div>
+		<div class="row mt-1 h-60" id="sortable">
+			<div class="col border border-info rounded m-1 p-2 summoner" id="summoner-1">
 				<div class="media">
-					<img class="mx-auto" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/Tristana.png">
+					<img class="mx-auto" id="summoner-1-champion-img" src="http://ddragon.leagueoflegends.com/cdn/8.23.1/img/champion/Tristana.png">
 				</div>
 				<div class="row">
-					<h5 class="mx-auto text-warning">Player Name</h5>
+					<h5 class="mx-auto text-warning summoner-1-player-name">Player Name</h5>
 				</div>
 				<div class="row">
-					<h5 class="mx-auto">Hero Name</h5>
-				</div>
-				<div class="row" id="summoner-1-role">
-					<h5 class="mx-auto text-info">Player Role</h5>
+					<h5 class="mx-auto summoner-1-hero-name">Hero Name</h5>
 				</div>
 				<div class="row w-75 mx-auto mt-2">
 					<div class="col">
 						<div class="media">
-							<img class="mx-auto w-75" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerFlash.png">
+							<img class="mx-auto w-75" id="summoner-1-spell-1" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerFlash.png">
 						</div>
 					</div>
 					<div class="col">
 						<div class="media">
-							<img class="mx-auto w-75" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerBarrier.png">
+							<img class="mx-auto w-75" id="summoner-1-spell-2" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerBarrier.png">
 						</div>
 					</div>
 					<div class="col">
 						<div class="media">
-							<img class="mx-auto w-75" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/mastery/6111.png">
+							<img class="mx-auto w-75" id="summoner-1-spell-key" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/mastery/6111.png">
 						</div>
 					</div>
 				</div>
@@ -204,33 +216,30 @@
 					</div>
 				</div>
 			</div>
-			<div class="col" id="summoner-1">
+			<div class="col border border-info rounded m-1 p-2  summoner" id="summoner-2">
 				<div class="media">
-					<img class="mx-auto" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/Thresh.png">
+					<img class="mx-auto" id="summoner-2-champion-img" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/Syndra.png">
 				</div>
 				<div class="row">
-					<h5 class="mx-auto text-warning">Player Name</h5>
+					<h5 class="mx-auto text-warning summoner-2-player-name">Player Name</h5>
 				</div>
 				<div class="row">
-					<h5 class="mx-auto">Hero Name</h5>
-				</div>
-				<div class="row" id="summoner-1-role">
-					<h5 class="mx-auto text-info">Player Role</h5>
+					<h5 class="mx-auto summoner-2-hero-name">Hero Name</h5>
 				</div>
 				<div class="row w-75 mx-auto mt-2">
 					<div class="col">
 						<div class="media">
-							<img class="mx-auto w-75" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerFlash.png">
+							<img class="mx-auto w-75" id="summoner-2-spell-1" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerFlash.png">
 						</div>
 					</div>
 					<div class="col">
 						<div class="media">
-							<img class="mx-auto w-75" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerExhaust.png">
+							<img class="mx-auto w-75" id="summoner-2-spell-2" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerBarrier.png">
 						</div>
 					</div>
 					<div class="col">
 						<div class="media">
-							<img class="mx-auto w-75" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/mastery/6111.png">
+							<img class="mx-auto w-75" id="summoner-2-spell-key" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/mastery/6111.png">
 						</div>
 					</div>
 				</div>
@@ -353,33 +362,322 @@
 					</div>
 				</div>
 			</div>
-			<div class="col" id="summoner-1">
+			<div class="col border border-info rounded m-1 p-2  summoner" id="summoner-3">
 				<div class="media">
-					<img class="mx-auto" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/Gragas.png">
+					<img class="mx-auto" id="summoner-3-champion-img" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/Darius.png">
 				</div>
 				<div class="row">
-					<h5 class="mx-auto text-warning">Player Name</h5>
+					<h5 class="mx-auto text-warning summoner-3-player-name">Player Name</h5>
 				</div>
 				<div class="row">
-					<h5 class="mx-auto">Hero Name</h5>
-				</div>
-				<div class="row" id="summoner-1-role">
-					<h5 class="mx-auto text-info">Player Role</h5>
+					<h5 class="mx-auto summoner-3-hero-name">Hero Name</h5>
 				</div>
 				<div class="row w-75 mx-auto mt-2">
 					<div class="col">
 						<div class="media">
-							<img class="mx-auto w-75" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerFlash.png">
+							<img class="mx-auto w-75" id="summoner-3-spell-1" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerFlash.png">
 						</div>
 					</div>
 					<div class="col">
 						<div class="media">
-							<img class="mx-auto w-75" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerSmite.png">
+							<img class="mx-auto w-75" id="summoner-3-spell-2" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerBarrier.png">
 						</div>
 					</div>
 					<div class="col">
 						<div class="media">
-							<img class="mx-auto w-75" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/mastery/6111.png">
+							<img class="mx-auto w-75" id="summoner-3-spell-key" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/mastery/6111.png">
+						</div>
+					</div>
+				</div>
+				
+				
+				<div class="row mt-3">
+					<div class="col mt-2">
+						<div class="row">
+							<h6 class="mx-auto">Stats</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">K/D/A at 5</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">K/D/A at 10</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">K/D/A at 20</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">avg CS at 5</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">avg CS at 10</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">avg CS at 20</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">First blood %</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">First turret %</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">First dragon %</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">First baron %</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">Win %</h6>
+						</div>
+					</div>
+					<div class="col mt-2">
+						<div class="row">
+							<h6 class="mx-auto">Champion</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">1.5/3/12</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">0.8/2/23</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">2.3/4/5</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">40</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">100</h6>
+						</div> 
+						<div class="row">
+							<h6 class="mx-auto">230</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">30%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">14%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">20%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">40%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">50%</h6>
+						</div>
+					</div>
+					<div class="col mt-2">
+						<div class="row">
+							<h6 class="mx-auto">General</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">2.5/4/4</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">1.8/5/6</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">10.3/8/9</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">30</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">120</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">330</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">50%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">90%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">20%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">30%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">55%</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col border border-info rounded m-1 p-2  summoner" id="summoner-4">
+				<div class="media">
+					<img class="mx-auto" id="summoner-4-champion-img" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/Thresh.png">
+				</div>
+				<div class="row">
+					<h5 class="mx-auto text-warning summoner-4-player-name">Player Name</h5>
+				</div>
+				<div class="row">
+					<h5 class="mx-auto summoner-4-hero-name">Hero Name</h5>
+				</div>
+				<div class="row w-75 mx-auto mt-2">
+					<div class="col">
+						<div class="media">
+							<img class="mx-auto w-75" id="summoner-4-spell-1" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerFlash.png">
+						</div>
+					</div>
+					<div class="col">
+						<div class="media">
+							<img class="mx-auto w-75" id="summoner-4-spell-2" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerExhaust.png">
+						</div>
+					</div>
+					<div class="col">
+						<div class="media">
+							<img class="mx-auto w-75" id="summoner-4-spell-key" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/mastery/6111.png">
+						</div>
+					</div>
+				</div>
+				
+				
+				<div class="row mt-3">
+					<div class="col mt-2">
+						<div class="row">
+							<h6 class="mx-auto">Stats</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">K/D/A at 5</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">K/D/A at 10</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">K/D/A at 20</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">avg CS at 5</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">avg CS at 10</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">avg CS at 20</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">First blood %</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">First turret %</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">First dragon %</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">First baron %</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">Win %</h6>
+						</div>
+					</div>
+					<div class="col mt-2">
+						<div class="row">
+							<h6 class="mx-auto">Champion</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">1.5/3/12</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">0.8/2/23</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">2.3/4/5</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">40</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">100</h6>
+						</div> 
+						<div class="row">
+							<h6 class="mx-auto">230</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">30%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">14%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">20%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">40%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">50%</h6>
+						</div>
+					</div>
+					<div class="col mt-2">
+						<div class="row">
+							<h6 class="mx-auto">General</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">2.5/4/4</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">1.8/5/6</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">10.3/8/9</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">30</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">120</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">330</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">50%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">90%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">20%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">30%</h6>
+						</div>
+						<div class="row">
+							<h6 class="mx-auto">55%</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col border border-info rounded m-1 p-2  summoner" id="summoner-5">
+				<div class="media">
+					<img class="mx-auto" id="summoner-5-champion-img" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/Gragas.png">
+				</div>
+				<div class="row">
+					<h5 class="mx-auto text-warning summoner-5-player-name">Player Name</h5>
+				</div>
+				<div class="row">
+					<h5 class="mx-auto summoner-5-hero-name">Hero Name</h5>
+				</div>
+				<div class="row w-75 mx-auto mt-2">
+					<div class="col">
+						<div class="media">
+							<img class="mx-auto w-75" id="summoner-5-spell-1" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerFlash.png">
+						</div>
+					</div>
+					<div class="col">
+						<div class="media">
+							<img class="mx-auto w-75" id="summoner-5-spell-2" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/spell/SummonerSmite.png">
+						</div>
+					</div>
+					<div class="col">
+						<div class="media">
+							<img class="mx-auto w-75" id="summoner-5-spell-key" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/mastery/6111.png">
 						</div>
 					</div>
 				</div>
@@ -503,7 +801,14 @@
 				</div>
 			</div>
 		</div>
-
+		<div class="row mt-3 w-100" id="bottom-analyze">
+			<div class="row w-100">
+				<h3 class="text-info text-analyze mx-auto">Sort players to their current roles and press "analyze"!</h3>
+			</div>
+			<div class="row mt-2 w-100">
+				<button class="btn btn-success btn-lg mx-auto" id="button-analyze">Analyze</button>
+			</div>
+		</div>
 
 
 

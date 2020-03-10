@@ -1,0 +1,230 @@
+html, body {
+	height: 100%;
+	width: 100%;
+	font-family: 'Heebo', sans-serif;
+}
+
+
+h6{
+	font-size: 0.8vw !important;
+	letter-spacing: 1.5px;
+}
+
+h5{
+	font-size: 1vw !important;
+	letter-spacing: 3px;
+	font-weight: bold !important;
+}
+
+hr{
+	width:90% !important;
+	background: #efefef;
+	margin-top: 0.5rem !important;
+	margin-bottom: 0.5rem !important;
+}
+
+.tooltip-custom{
+	position: absolute;
+	visibility: hidden;
+	z-index: 99;
+	border: 1px solid black;
+	border-radius: 1em;
+	padding: 10px;
+	background-color: white;
+	max-width: 200px;
+}
+
+.tooltip-title{
+	font-size: 0.8em;
+	font-weight: bold;
+	border-bottom: 0.5px solid gray;
+	text-align: center;
+}
+
+.tooltip-subtitle{
+	font-size: 0.7em;
+	font-weight: bold;
+}
+
+.tooltip-content{
+	font-size: 0.7em;
+}
+
+.numbertwo{
+	color: #ffb142 !important;
+}
+
+.topbutton{
+	cursor: pointer;
+}
+
+.btn-purple{
+	box-shadow: none !important;
+	color: #8e44ad !important;
+	border-color: #8e44ad !important;
+	background-color: white !important;
+}
+
+.btn-purple-active{
+	color: white !important;
+	border-color: #8e44ad !important;
+	background-color: #8e44ad !important;
+}
+
+.btn-orange{
+	box-shadow: none !important;
+	color: #ffb142 !important;
+	border-color: #ffb142 !important;
+	background-color: white !important;
+}
+
+.btn-purple-nogroup{
+	box-shadow: none !important;
+	color: #8e44ad !important;
+	border-color: #8e44ad !important;
+	background-color: white !important;
+}
+
+.container{
+	max-width: 100% !important;
+	padding: 0 !important;
+	/*background-color: red;*/
+}
+
+.fas{
+	font-size: 1.3rem;
+}
+
+.bignumber{
+	font-size: 4rem !important;
+	color: #ffb142 !important;
+}
+
+.dropdown-toggle::after{
+	display: none!important;
+}
+
+.dropdown-users-wrapper{
+	cursor: pointer;
+}
+
+.andromeda{
+	letter-spacing: 5px !important;
+	font-size: 0.8vw !important;
+}
+
+.modal-title{
+	letter-spacing: 1.1px
+}
+
+.subtitle{
+	text-align: center;
+	padding-bottom: 2%;
+}
+
+.startbutton-active{
+	color: #1bc115;
+}
+
+.stopbutton-active{
+	color: #ff3030;
+}
+
+.startbutton :hover{
+	color: #1bc115;
+}
+
+.stopbutton :hover{
+	color: #ff3030;
+}
+
+.settingsbutton :hover{
+	color: #ffb142;
+}
+
+.resetbutton :hover{
+	color: #ffb142;
+}
+
+.savebutton :hover{
+	color: #ffb142;
+}
+
+.avatar{
+	border-radius: 50%;
+	width: 2.5em !important;
+	height: 2.5em !important;
+}
+
+.top-bar{
+	background-color: #8e44ad;
+	color: white;
+	margin: 0 !important;
+
+}
+
+.progressbar{
+	width: 40% !important;
+	height: 40% !important;
+}
+
+.fit-content{
+	max-width: fit-content !important;
+}
+
+.custommessage{
+	font-size: 0.8vw !important;
+}
+
+.h-10{
+	height: 10% !important;
+}
+
+.h-15{
+	height: 15% !important;
+}
+
+.h-20{
+	height: 20% !important;
+}
+
+.h-28{
+	height: 28% !important;
+}
+
+.h-30{
+	height: 30% !important;
+}
+
+.h-60{
+	height: 60% !important;
+}
+
+.h-70{
+	height: 70% !important;
+}
+
+.h-80{
+	height: 80% !important;
+}
+
+.h-90{
+	height: 90% !important;
+}
+
+.w-20{
+	width: 20% !important;
+}
+
+.w-30{
+	width: 30% !important;
+}
+
+.w-70{
+	width: 70% !important;
+}
+
+.w-80{
+	width: 80% !important;
+}
+

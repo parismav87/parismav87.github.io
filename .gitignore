@@ -1,4 +1,6 @@
-
-proj/1.piskel
-
 *.piskel
+*.json
+lolbot/node_modules/
+d2g/node_modules/
+*.exe
+*.csv
