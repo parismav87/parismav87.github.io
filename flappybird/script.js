@@ -8,6 +8,7 @@ PIPE_VELOCITY = -6
 IS_DEAD = false
 PIPE_GAP_MIN = 0
 PIPE_GAP_MAX = 50
+PIPE_BOTTOM_MIN = GROUND_Y -100
 
 
 
@@ -58,20 +59,23 @@ function draw() {
   }
 
 
-  if(frameCount % 60 == 0 && !IS_DEAD){
+  if(frameCount % 80 == 0 && !IS_DEAD){
     gap = random(PIPE_GAP_MIN, PIPE_GAP_MAX)
+    botPipePosition = random(PIPE_BOTTOM_MIN, PIPE_BOTTOM_MIN + 250)
     pipeX = window.innerWidth
 
-    bottomPipe = createSprite(pipeX, GROUND_Y-200, 50, 500)
-    bottomPipe.width = 50
+    bottomPipe = createSprite(pipeX, botPipePosition , 50, 50)
     bottomPipe.addImage(pipeImg)
     bottomPipe.scale = 0.4
     bottomPipe.velocity.x = PIPE_VELOCITY
 
-    topPipe = createSprite(pipeX, 0, 100, 100)
+    console.log(botPipePosition)
+    console.log(window.innerHeight)
+
+    topPipe = createSprite(pipeX, botPipePosition - 500 - gap , 50, 50)
     topPipe.addImage(pipeImg)
     topPipe.mirrorY(-1)
-    topPipe.scale = 0.3
+    topPipe.scale = 0.4
     topPipe.velocity.x = PIPE_VELOCITY
 
     pipes.add(bottomPipe)
