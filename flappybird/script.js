@@ -238,6 +238,9 @@ function mousePressed() {
 function keyPressed(){
   if(key == 'r'){
     reset()
+  } else if (key == "Escape"){
+    die()
+    download()
   }
 }
 
