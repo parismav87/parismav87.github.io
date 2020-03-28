@@ -16,7 +16,7 @@
 		position: absolute;
 		z-index: 99;
 		left: 30%;
-		top: 10%;
+		top: 0%;
 	}
 	#videoElement {
 		width: 500px;
@@ -27,18 +27,24 @@
 		margin-left:40%;
 		margin-top:5%;
 	}
+	#instructions{
+		text-align: center;
+	}
 </style>
 
 </head>
 <body>
-	<!--<button id="finished">Finished!</button>-->
 	 
 <div>
-	 <!-- <div id="container">
+	 <div id="container">
 		<video autoplay="true" id="videoElement"></video>
 		<button id="startExperiment">Start Experiment</button>
-		<p>Please make sure lighting and camera angle are properly setup, to make your face clearly and entirely visible. Press "Start Experiment" button when ready!</p>
-	</div> -->
+		<p id="instructions">Please make sure lighting and camera angle are properly setup, to make your face clearly and entirely visible.<br>
+			Use left click to flap.<br>
+			The game will automatically end after 10 minutes. Press Escape if you wish to abandon the game before that time.<br>
+			Press "Start Experiment" button when ready!
+		</p>
+	</div>
 </div>
 </body>
 </html>

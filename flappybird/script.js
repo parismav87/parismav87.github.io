@@ -14,6 +14,80 @@ PIPE_BOTTOM_MIN = GROUND_Y -100
 SCALE = 0.5
 
 
+var recordedChunks = [];
+var texts = []
+var constraints = { audio: false, video: true };
+var options = {mimeType: 'video/webm; codecs=vp9'};
+
+
+function startExperiment(){
+  // console.log("haha")
+  var x = document.getElementById("container");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+  setTimeout(function(){ download(); }, 30000);
+  STARTED = true
+  reset()
+}
+
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  console.log("satisfied")
+  navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+    mediaRecorder = new MediaRecorder(stream, options);
+    mediaRecorder.ondataavailable = handleDataAvailable;
+    mediaRecorder.start(2000);
+    webcamTime = Date.now() + 2000;
+  })
+}
+
+function handleDataAvailable(event) {
+  // console.log(event)
+  if (event.data.size > 0) {
+    recordedChunks.push(event.data);
+  }
+}
+
+if (navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream) {
+      console.log(stream)
+      var video = document.getElementById("videoElement");
+      video.srcObject = stream
+      console.log(video)
+    })
+    .catch(function (err0r) {
+      console.log(err0r);
+    });
+}
+
+function download() {
+  mediaRecorder.stop()
+  var blob = new Blob(recordedChunks, {
+  type: 'video/webm'
+  });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  document.body.appendChild(a);
+  
+
+  a.style = 'display: none';
+  a.href = url;
+  a.download = str(webcamTime)+'.webm';
+  a.click();
+  window.URL.revokeObjectURL(url);
+
+  var textDoc = document.createElement('a');
+
+    textDoc.href = 'data:attachment/text,' + encodeURI(texts.join('\n'));
+    textDoc.target = '_blank';
+    textDoc.download = str(webcamTime)+'.txt';
+    textDoc.click();
+}
+
+
 
 
 function preload() {
@@ -35,12 +109,17 @@ function setup() {
   bird.setCollider("circle")
   MAX_NUMBER_BODIES = int(SCREEN_HEIGHT/(PIPE_BODY_HEIGHT*SCALE))-3 // leave at least 3x pipe body height as gap
   score = 0
+  STARTED = false
+
+  document.getElementById("startExperiment").addEventListener("click", startExperiment);
 }
 
 
 
 
 function draw() {
+  var str = "newFrame" + ";" + Date.now() + ';BirdStatus; ' + bird.dead + ';Score; ' + score + ';bird.y; ' + bird.y + ';EndLine' + ';';
+  texts.push(str);
   
   background(135,206,235);
   let c = color(255, 204, 0);
@@ -54,7 +133,7 @@ function draw() {
   if(bird.position.y<0){
     bird.position.y = 0;
   } else if(bird.position.y>GROUND_Y){
-    bird.position.y = GROUND_Y
+    die()
   }
 
   bird.rotationSpeed += BIRD_ROTATION_DROP
@@ -65,7 +144,7 @@ function draw() {
   }
 
 
-  if(frameCount % 80 == 0 && !IS_DEAD){
+  if(frameCount % 80 == 0 && !IS_DEAD && STARTED){
 
     gap = int(random(PIPE_GAP_MIN, PIPE_GAP_MAX))
 
@@ -121,6 +200,10 @@ function draw() {
     }
   }
 
+  if(!STARTED){
+    bird.velocity.y = 0
+    bird.rotationSpeed = 0
+  }
       
   drawSprites()
 
@@ -131,22 +214,52 @@ function draw() {
   textAlign(CENTER);
   textSize(32);
   text(score, 50, 50)
+
+  if(IS_DEAD){
+    noStroke();
+    fill(255);
+    textFont(myFont)
+    textAlign(CENTER);
+    textSize(32);
+    var str = "Total score: "+ score + "\nPress R to reset."
+    text(str, window.innerWidth/2, 200)
+  }
 }
 
 function mousePressed() {
   if(!IS_DEAD){
     bird.velocity.y = BIRD_ANTIGRAVITY;
     bird.rotationSpeed = BIRD_ROTATION_JUMP
+    var str = "JUMP;" + Date.now() + ";EndLineJump" + ';';
+    texts.push(str);
   }  
+}
+
+function keyPressed(){
+  if(key == 'r'){
+    reset()
+  }
 }
 
 function die(){
   IS_DEAD = true
+  for(p of pipes){
+    p.velocity.x = 0
+  }
   bird.velocity.y = 0
   bird.rotationSpeed = 0
-  for(p of pipes){
-    p.velocity.x =0
-  }
+
+  
+}
+
+function reset(){
+  pipes.removeSprites()
+  IS_DEAD = false
+  bird.position.y = 300
+  bird.rotation = 0
+  score = 0
+  // var str = "RESET;";
+  // texts.push(str);
 }
 
 
