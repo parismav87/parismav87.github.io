@@ -1,31 +1,40 @@
+SCREEN_HEIGHT = window.innerHeight
 BIRD_VELOCITY = 0;
 BIRD_GRAVITY = .25;
 BIRD_ANTIGRAVITY = -7;
 BIRD_ROTATION_DROP = 0.15;
 BIRD_ROTATION_JUMP = -4.2;
-GROUND_Y = window.innerHeight-100
+GROUND_Y = SCREEN_HEIGHT-(SCREEN_HEIGHT/10)
 PIPE_VELOCITY = -6
 IS_DEAD = false
-PIPE_GAP_MIN = 0
-PIPE_GAP_MAX = 50
+PIPE_BODY_HEIGHT = 70
+PIPE_GAP_MIN = 1
+PIPE_GAP_MAX = 5
 PIPE_BOTTOM_MIN = GROUND_Y -100
+SCALE = 0.5
+
 
 
 
 function preload() {
-  pipeImg = loadImage('pipe.png');
+  pipeBodyImg = loadImage('pipe_1.png');
+  pipeHeadImg = loadImage('pipe_2.png');
   birdImg = loadImage('bird.png');
+  myFont = loadFont('8bit.TTF');
 }
 
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
   pipes = new Group();
+  scorePipes = new Group(); //separate group for score keeping
   bird = createSprite(100,300,50,50)
   bird.addImage(birdImg)
   bird.scale = 0.05
   bird.addImage(birdImg);
   bird.setCollider("circle")
+  MAX_NUMBER_BODIES = int(SCREEN_HEIGHT/(PIPE_BODY_HEIGHT*SCALE))-3 // leave at least 3x pipe body height as gap
+  score = 0
 }
 
 
@@ -37,12 +46,9 @@ function draw() {
   let c = color(255, 204, 0);
   fill(c);
   noStroke();
-  rect(0, GROUND_Y, window.innerWidth, 100)
+  rect(0, GROUND_Y, window.innerWidth, SCREEN_HEIGHT/10)
 
-  noStroke();
-  fill(0);
-  textAlign(CENTER);
-  textSize(32);
+  
 
   bird.velocity.y += BIRD_GRAVITY
   if(bird.position.y<0){
@@ -60,36 +66,71 @@ function draw() {
 
 
   if(frameCount % 80 == 0 && !IS_DEAD){
-    gap = random(PIPE_GAP_MIN, PIPE_GAP_MAX)
-    botPipePosition = random(PIPE_BOTTOM_MIN, PIPE_BOTTOM_MIN + 250)
-    pipeX = window.innerWidth
 
-    bottomPipe = createSprite(pipeX, botPipePosition , 50, 50)
-    bottomPipe.addImage(pipeImg)
-    bottomPipe.scale = 0.4
-    bottomPipe.velocity.x = PIPE_VELOCITY
+    gap = int(random(PIPE_GAP_MIN, PIPE_GAP_MAX))
 
-    console.log(botPipePosition)
-    console.log(window.innerHeight)
+    //bottom pipes
+    bottomBodies = int(random(PIPE_GAP_MAX, MAX_NUMBER_BODIES)) - gap
+    for(var i=0; i<bottomBodies; i++){
+      p = createSprite(window.innerWidth, GROUND_Y - (i * PIPE_BODY_HEIGHT * SCALE), 100, 70)
+      if(i == bottomBodies -1){
+        p.addImage(pipeHeadImg)
+      } else{
+        p.addImage(pipeBodyImg)
+      }
+      p.velocity.x = -5
+      p.scale = 0.5
+      pipes.add(p)
+      if(i==0){
+        scorePipes.add(p)
+      }
+    }
 
-    topPipe = createSprite(pipeX, botPipePosition - 500 - gap , 50, 50)
-    topPipe.addImage(pipeImg)
-    topPipe.mirrorY(-1)
-    topPipe.scale = 0.4
-    topPipe.velocity.x = PIPE_VELOCITY
+    //top pipes
+    topBodies = MAX_NUMBER_BODIES - bottomBodies - gap
+    for(var i=0; i<topBodies; i++){
+      p = createSprite(window.innerWidth, 0 + (i * PIPE_BODY_HEIGHT * SCALE), 100, 70)
+      if(i == topBodies -1){
+        p.addImage(pipeHeadImg)
+        p.mirrorY(-1)
+      } else{
+        p.addImage(pipeBodyImg)
+      }
+      p.velocity.x = -5
+      p.scale = 0.5
+      pipes.add(p)
+    }
 
-    pipes.add(bottomPipe)
-    pipes.add(topPipe)
+
+
   }
-
+  removed = false
   for(p of pipes){
+    // console.log(p.position.x)
     if(p.overlap(bird)){
       die()
     }
+    if(p.position.x < -100){
+      p.remove()
+    }
   }
+  for (s of scorePipes){
+    if(s.position.x<100){
+      score += 1;
+      scorePipes.remove(s)
+    }
+  }
+
       
   drawSprites()
-  
+
+
+  noStroke();
+  fill(255);
+  textFont(myFont)
+  textAlign(CENTER);
+  textSize(32);
+  text(score, 50, 50)
 }
 
 function mousePressed() {
