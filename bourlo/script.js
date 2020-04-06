@@ -259,7 +259,7 @@ function preload() {
 
 
 function setup() {
-  socket = io.connect("http://2e112e99.ngrok.io")
+  socket = io.connect("https://0dc85c6d.ngrok.io")
   createCanvas(1280, 600);
 
   
