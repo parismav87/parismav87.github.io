@@ -16,7 +16,7 @@ SCALE = 0.5
 
 var recordedChunks = [];
 var texts = []
-var constraints = { audio: false, video: true };
+var constraints = { audio: false, video: {frameRate: {min: 28, max: 32, ideal: 30}} };
 var options = {mimeType: 'video/webm; codecs=vp9'};
 
 

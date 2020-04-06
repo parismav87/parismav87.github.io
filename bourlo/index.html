@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="script.js"></script>
+	<script type="text/javascript" src="p5.min.js"></script>
+	<script type="text/javascript" src="p5.play.js"></script>
+	<script type="text/javascript" src="socket.io.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<span id='pass'>Pass</span>
+	<div id='buy'>
+		<img class="suite" data-suite='S' src="spade.png">
+		<img class="suite" data-suite='C' src="club.png">
+		<img class="suite" data-suite='H' src="heart.png">
+		<img class="suite" data-suite='D' src="diamond.png">
+	</div>
+	<span id="player1" class="playerName"></span>
+	<span id="player4" class="playerName"></span>
+	<span id="player3" class="playerName"></span>
+	<span id="player2" class="playerName"></span>
+	<input type="text" id="myName" placeholder="Enter Name"></input>
+	<button id="join">Join Game</button>
+	<span id="team1name"></span>
+	<span id="team2name"></span>
+	<span id="team1score"></span>
+	<span id="team2score"></span>
+</body>
+</html>

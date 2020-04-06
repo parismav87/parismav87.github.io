@@ -1,0 +1,117 @@
+body{
+	margin: 0;
+}
+
+.playerName{
+	position: absolute;
+	color: white;
+	font-size: 24px;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+#pass{
+	position: absolute;
+	left: 550px;
+	top: 390px;
+	border: 1px solid red;
+	padding: 2px;
+	color: white;
+	cursor: pointer;
+	display: none;
+}
+
+.suite{
+	max-width: 20px
+}
+
+#buy{
+	position: absolute;
+	left: 590px;
+	top: 390px;
+	cursor: pointer;
+	display: none;
+}
+/*
+#buy{
+	position: absolute;
+	left: 590px;
+	top: 390px;
+	border: 1px solid green;
+	padding: 2px;
+	color: white;
+	cursor: pointer;
+	display: none;
+}*/
+
+#player1{
+	left: 550px;
+	top: 420px;
+}
+
+#player2{
+	left: 1100px;
+	top: 300px;
+	transform: rotate(90deg);
+}
+
+#player3{
+	left: 550px;
+	top: 100px;
+}
+
+#player4{
+	left: 150px;
+	top: 300px;
+	transform: rotate(270deg);
+}
+
+#myName{
+	position: absolute;
+	left: 550px;
+	top: 300px;
+}
+
+
+
+#join{
+	position: absolute;
+	left: 550px;
+	top: 320px;
+}
+
+#team1name{
+	color: white;
+	position: absolute;
+	left:950px;
+	top:50px;
+	font-size:16px;
+}
+
+#team2name{
+	color: white;
+	position: absolute;
+	left:950px;
+	top:80px;
+	font-size:16px;
+}
+	
+#team1score{
+	color: white;
+	position: absolute;
+	left:1100px;
+	top:50px;
+	font-size:16px;
+}
+
+#team2score{
+	color: white;
+	position: absolute;
+	left:1100px;
+	top:80px;
+	font-size:16px;
+}
