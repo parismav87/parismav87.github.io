@@ -1,61 +1,67 @@
-numbers = {
-  7: "7",
-  8: "8",
-  9: "9",
-  10: "10",
-  11: "J",
-  12: "Q",
-  13: "K",
-  14: "A"
-}
-suites ={
-  1: "H",
-  2: "D",
-  3: "C",
-  4: "S"
-}
+
 
 let socket;
 let me;
 
 
 
-var Card = function(){
-  this.back = loadAnimation("cards/back.png")
-  this.sprite = createSprite(-200,-200,100,140)
-  this.sprite.active = ""
+var Card = function(cardType, index){
+  this.numbers = {
+    7: "7",
+    8: "8",
+    9: "9",
+    10: "10",
+    11: "J",
+    12: "Q",
+    13: "K",
+    14: "A"
+  }
+  this.suites ={
+    1: "H",
+    2: "D",
+    3: "C",
+    4: "S"
+  }
+  this.back = "cards/back.png"
+  let elStr = cardType+index
+  this.sprite = $("#"+ elStr)
+  this.active = false
   this.number = 0
   this.suite = 0
-  for(n in numbers){
-    for(s in suites){
-      cardName = numbers[n]+suites[s]
-      animation = loadAnimation("cards/"+cardName+".png")
-      this.sprite.addAnimation(cardName, animation)
+  this.loadAnimation = function(number,suite){
+    if(number !=0 && suite!= 0){
+      let cardName = "cards/"+this.numbers[number]+this.suites[suite]+".png"
+      // console.log(cardName)
+      this.sprite.attr("src", cardName)
+      show(this.sprite)
+      this.active = false
     }
-  }  
-  this.sprite.addAnimation("back", this.back)
+  } 
+  this.loadBack = function(){
+    this.sprite.attr("src", this.back)
+  }
 }
 
-function clickOnCard(card, mouseX, mouseY){
-  if(card.getBoundingBox().top() <= mouseY && card.getBoundingBox().bottom() >= mouseY && card.getBoundingBox().left() <= mouseX && card.getBoundingBox().right() >= mouseX){
-    return true
-  }
-  return false
+function show(el){
+  $(el).css("visibility", "visible")
+}
+
+function hide(el){
+  $(el).css("visibility", "hidden")
 }
 
 function playCard(n,s,p){
-  var anim = numbers[n]+suites[s]
   for(c of board){
-    if(!c.visible){
-      c.changeAnimation(anim)
-      c.visible = true
+    if($(c.sprite).css("visibility") == "hidden"){
+      c.loadAnimation(n,s)
+      show(c.sprite)
       break;
     }
   }
   if(me.position == p){
-    for(c of myCards){
+    for(c of me.cards){
       if(c.active){
-        c.visible = false
+        hide(c.sprite)
       }
     }
   } else {
@@ -65,29 +71,32 @@ function playCard(n,s,p){
 }
 
 function initCards(){
-  for(let i=0; i<8; i++){
-    var card = new Card()
-    card.sprite.visible = false
-    card.sprite.position.x = 640 - (8*15) + (i*25)
-    card.sprite.position.y = 575
-    myCards.add(card.sprite)
-    myCardsObject.push(card)
+  var myCards = []
+  for(let i=1; i<9; i++){
+    var card = new Card("player1card",i)
+    myCards.push(card)
   }
+  me.cards = myCards
   initOthers(8, "top")
   initOthers(8, "right")
   initOthers(8, "left")
 }
 
 function updateCards(){
-  for(var c in me.cards){
-    var crd = me.cards[c]
-    var cardName = numbers[crd.number]+suites[crd.suite]
-    myCards[c].changeAnimation(cardName)
-    myCardsObject[c].number = crd.number
-    myCardsObject[c].suite = crd.suite
-    myCards[c].visible = true
-    myCards[c].active = false
+  // console.log("updatecards")
+  for(var c of me.cards){
+    // console.log(c)
+    c.loadAnimation(c.number, c.suite)
   }  
+}
+
+function haveSeven(boardCard){
+  for(c of me.cards){
+    if(c.suite == boardCard.suite && c.number == 7){
+      return true
+    }
+  }
+  return false
 }
 
 function getPosition(posNr){
@@ -133,22 +142,22 @@ function removeCard(posNr){
   position = getPosition(posNr)
   if(position == "top"){
     for(c of topCards){
-      if(c.visible){
-        c.visible  = false;
+      if($(c.sprite).css("visibility") == "visible"){
+        hide(c.sprite)
         break;
       }
     }
   } else if(position == "right"){
     for(c of rightCards){
-      if(c.visible){
-        c.visible  = false;
+      if($(c.sprite).css("visibility") == "visible"){
+        hide(c.sprite)
         break;
       }
     } 
   } else {
     for(c of leftCards){
-      if(c.visible){
-        c.visible  = false;
+      if($(c.sprite).css("visibility") == "visible"){
+        hide(c.sprite)
         break;
       }
     } 
@@ -156,65 +165,46 @@ function removeCard(posNr){
 }
 
 function initOthers(nrCards, position){
-  for(i=0; i<nrCards; i++){
-    var c = new Card()
-    c.sprite.changeAnimation("back")
+  for(i=1; i<nrCards+1; i++){
     if(position == "top"){
-      c.sprite.position.x = 640 - (nrCards*15) + (i*25)
-      c.sprite.position.y = 0 
-      c.sprite.visible = false
-      topCards.add(c.sprite)   
+      var c = new Card("player3card",i)
+      topCards.push(c)   
     } else if(position == "right"){
-      c.sprite.position.x = 1240
-      c.sprite.position.y = 300 - (nrCards*15) + (i*25)
-      c.sprite.rotation = 90
-      c.sprite.visible = false
-      rightCards.add(c.sprite)
+      var c = new Card("player2card",i)
+      rightCards.push(c)
     } else {
-      c.sprite.position.x = 0
-      c.sprite.position.y = 300 - (nrCards*15) + (i*25)
-      c.sprite.rotation = 90
-      c.sprite.visible = false
-      leftCards.add(c.sprite)
+      var c = new Card("player4card",i)
+      leftCards.push(c)
     }
   }
 }
 
-function updateOthersCards(posNr){
-  var position = getPosition(posNr)
+function updateOthersCards(position, index){
+  // var position = getPosition(posNr)
   if(position == "top"){
-    for(c in topCards){
-      if(c<me.cards.length){
-        topCards[c].visible = true
-      }
-    }
+    show(topCards[index].sprite)
   } else if(position == "right"){
-    for(c in rightCards){
-      if(c<me.cards.length){
-        rightCards[c].visible = true
-      }
-    }
+    show(rightCards[index].sprite)
   } else {
-    for(c in leftCards){
-      if(c<me.cards.length){
-        leftCards[c].visible = true
-      }
-    }
+    show(leftCards[index].sprite)
   }
 }
 
 function updatePlayers(players){
   clearPlayers()
-  console.log(players)
+  // console.log(players)
     for(p of players){
       if(p.name != me.name){
         var position = getPosition(p.position)
         if(position == "top"){
-          document.getElementById('player3').innerHTML = p.name
+          $('#player3').text(p.name)
+          show('#player3')
         } else if(position == "right"){
-          document.getElementById('player2').innerHTML = p.name
+          $('#player2').text(p.name)
+          show('#player2')
         } else {
-          document.getElementById('player4').innerHTML = p.name
+          $('#player4').text(p.name)
+          show('#player4')
         }
       }
     }
@@ -226,44 +216,194 @@ function clearPlayers(){
   document.getElementById('player4').innerHTML = ""
 }
 
-function toggleTurn(gPos){
+function toggleTurn(gPos, buy){
   console.log("turn position", gPos)
   document.getElementById('player1').style.color = "white"
   document.getElementById('player2').style.color = "white"
   document.getElementById('player3').style.color = "white"
   document.getElementById('player4').style.color = "white"
-  document.getElementById('buy').style.display = "none"
-  document.getElementById('pass').style.display = "none"
+  hide("#buy")
+  hide("#pass")
   if(gPos == "top"){
     document.getElementById('player3').style.color = "orange"
+    me.hasTurn = true
   } else if(gPos == "right"){
     document.getElementById('player2').style.color = "orange"
+    me.hasTurn = true
   } else if(gPos == "left"){
     document.getElementById('player4').style.color = "orange"
+    me.hasTurn = true
   } else{
     document.getElementById('player1').style.color = "orange"
-    document.getElementById('buy').style.display = "block"
-    document.getElementById('pass').style.display = "block"
+    if(buy){
+      console.log("showing")
+      show("#buy")
+      show("#pass")
+    }
+    
+    me.hasTurn = true
+  }
+}
+
+function restoreBack(gPos){
+  if(gPos == "top"){
+    for(c of topCards){
+      c.loadBack()
+    }
+  } else if(gPos == "right"){
+    for(c of rightCards){
+      c.loadBack()
+    }
+  } else {
+    for(c of leftCards){
+      c.loadBack()
+    }
+  }
+}
+
+function handleDeclarations(data){
+  console.log("declaration data")
+  console.log(data)
+  var position = data.position;
+  var gPos = getPosition(position)
+  if(position != me.position){
+    for(d of data.declarations){
+      for(c of d.cards){
+        showCard(c, gPos)
+      }
+    }
+    setTimeout(function(){
+      restoreBack(gPos)
+    },3000)
+  }
+}
+
+function showCard(card, position){
+  console.log("showing card  ", card, position)
+  if(position == "top"){
+    for(c of topCards){
+      if($(c.sprite).attr("src").includes("back.png")){
+        // show(c.sprite);
+        c.loadAnimation(card.number, card.suite)
+        break;
+      }
+    }
+  } else if(position == "right"){
+    for(c of rightCards){
+      if($(c.sprite).attr("src").includes("back.png")){
+        // show(c.sprite);
+        c.loadAnimation(card.number, card.suite)
+        break;
+      }
+    } 
+  } else {
+    for(c of leftCards){
+      if($(c.sprite).attr("src").includes("back.png")){
+        // show(c.sprite);
+        c.loadAnimation(card.number, card.suite)
+        break;
+      }
+    } 
   }
 }
 
 
-function preload() {
-  myCards = new Group()
-  board = new Group()
-  topCards = new Group()
-  rightCards = new Group()
-  leftCards = new Group()
-  myCardsObject = []
+
+function toggleDealer(gPos){
+  hide(".player1dealer")
+  hide(".player2dealer")
+  hide(".player3dealer")
+  hide(".player4dealer")
+  if(gPos == "top"){
+    show(".player3dealer")
+  } else if(gPos == "right"){
+    show(".player2dealer")
+  } else if(gPos == "left"){
+    show(".player4dealer")
+  } else{
+    show(".player1dealer")
+  }
+}
+
+function toggleBought(data){
+  let gPos = getPosition(data.position)
+  let suite = data.suite
+  hide(".player1buy")
+  hide(".player2buy")
+  hide(".player3buy")
+  hide(".player4buy")
+  if(gPos == "top"){
+    show(".player3buy")
+    let imgName = suite + ".png"
+    $(".player3buy").attr("src", imgName)
+  } else if(gPos == "right"){
+    show(".player2buy")
+    let imgName = suite + ".png"
+    $(".player2buy").attr("src", imgName)
+  } else if(gPos == "left"){
+    show(".player4buy")
+    let imgName = suite + ".png"
+    $(".player4buy").attr("src", imgName)
+  } else{
+    show(".player1buy")
+    let imgName = suite + ".png"
+    $(".player1buy").attr("src", imgName)
+  }
 }
 
 
-function setup() {
-  socket = io.connect("https://0dc85c6d.ngrok.io")
-  createCanvas(1280, 600);
+$( document ).ready(function() {
+  console.log( "ready!" );
+  socket = io.connect("https://1b34ffc6.ngrok.io")
+
+
+  board = []
+  topCards = []
+  rightCards = []
+  leftCards = []
+
+
 
   
-  document.getElementById("join").addEventListener("click", function(evt){
+  $("#playCard").on("click", function(evt){
+    for(c of me.cards){
+      if(c.active){
+        var data = {
+          'position': me.position,
+          'number': c.number,
+          'suite': c.suite
+        }
+        socket.emit("makeMove", data)
+        hide("#playCard")
+      }      
+    }
+  })
+  
+  $(".player1card").on("click", function(evt){
+    for(c of me.cards){
+      if(c.sprite[0] == evt.target){
+        if(!c.active){
+          c.active = true
+          c.sprite.addClass("active")
+          if(me.hasTurn){
+            show("#playCard")
+          }
+        } else {
+          c.active = false
+          c.sprite.removeClass("active")
+          hide("#playCard")
+          
+        }
+        
+      } else {
+        c.active = false
+        c.sprite.removeClass("active")
+      }
+    }
+    console.log(evt)
+  })
+  
+  $("#join").on("click", function(evt){
     socket.emit("newPlayer",{
       name: document.getElementById("myName").value
     })
@@ -277,7 +417,16 @@ function setup() {
       })
     })
   }
-  
+
+  $("#tradeSevenYes").on("click", function(evt){
+    hide("#tradeSeven")
+    socket.emit("tradeSevenYes", me.position)
+  })
+
+  $("#tradeSevenNo").on("click", function(evt){
+    hide("#tradeSeven")
+    socket.emit("tradeSevenNo", me.position)
+  })
 
   document.querySelector("#pass").addEventListener("click", function(evt){
     socket.emit("pass", me.position)
@@ -294,33 +443,44 @@ function setup() {
   }
 
   initCards()
-  // updateCards()
 
   //draw board
-  for(let i=0; i<4; i++){
-    var c = new Card()
-    c.sprite.visible = false
-    c.sprite.position.x = 550 + (i*20)
-    c.sprite.position.y = 280
-    board.add(c.sprite)
+  for(let i=1; i<5; i++){
+    var c = new Card("boardCard", i)
+    board.push(c)
   }
 
   socket.on("connect", function(data){
     socket.emit("updatePlayers", {})
   })
 
+
   socket.on("playerJoin", function(data){
     socket.emit("updatePlayers", {})
   })
 
   socket.on("hasBought", function(data){
+    console.log(data)
+    toggleBought(data)
+    if(haveSeven(data.boardCard)){
+      // console.log("i have 7")
+      show("#tradeSeven")
+    } else {
+      // console.log(" i no heff 7")
+      socket.emit("tradeSevenNo", me.position)
+    }
+    
+  })
+
+  socket.on("startRound", function(data){
     socket.emit("requestCards")
-    document.getElementById('buy').style.display = "none"
-    document.getElementById('pass').style.display = "none"
+    // hide("#buy")
+    // hide("#pass")
   })
 
   socket.on("joinSuccess", function(data){
-    document.getElementById("player1").innerHTML = data['name']
+    $("#player1").text(data['name'])
+    show('#player1')
     me.position = data['position']
     me.team = data['team']
     me.hasJoined = true
@@ -335,7 +495,16 @@ function setup() {
   })
 
   socket.on("turn", function(data){
-    toggleTurn(getPosition(data))
+    var pos = getPosition(data.position)
+    var showBuy = data.buy
+    console.log(" turnnn  ")
+    console.log(data)
+    toggleTurn(pos, showBuy)
+  })
+
+  socket.on("dealer", function(data){
+    console.log(data)
+    toggleDealer(getPosition(data))
   })
 
   socket.on("gameStart", function(data){
@@ -346,50 +515,57 @@ function setup() {
   })
 
   socket.on("updateScores", function(data){
+    show("#scoreTable")
     var team1 = data[0]
     var team2 = data[1]
-    team1Name = team1.players[0].name + "/" + team1.players[1].name
-    team2Name = team2.players[0].name + "/" + team2.players[1].name
-    team1Score = team1.score
-    team2Score = team2.score
+    var team1Name = team1.players[0].name + "/" + team1.players[1].name
+    var team2Name = team2.players[0].name + "/" + team2.players[1].name
+    var team1Score = team1.score
+    var team2Score = team2.score
     document.getElementById("team1name").innerHTML = team1Name
     document.getElementById("team2name").innerHTML = team2Name
     document.getElementById("team1score").innerHTML = team1Score
     document.getElementById("team2score").innerHTML = team2Score
   })
+
+  socket.on("declarations", function(data){
+    console.log("received declarations")
+    handleDeclarations(data)
+  })
     
   socket.on("getCards", function(data){
-    me.cards = data
     console.log("got cards")
-    updateCards()
-    for(let i=1; i<me.cards.length; i++){
-      if(i!= me.position){
-        updateOthersCards(i)
+    console.log(data)
+    initCards()
+    for(d in data){
+      let da = data[d]
+      me.cards[d].suite = da.suite
+      me.cards[d].number = da.number
+      me.cards[d].isAtou = da.isAtou
+      for(let i=0; i<3; i++){
+        if(i == 0){
+          updateOthersCards("right", d)
+        } else if(i==1){
+          updateOthersCards("top", d)
+        } else {
+          updateOthersCards("left", d)
+        }
+        
       }
     }
+    updateCards()
   })
 
   socket.on("roundReset", function(data){
     socket.emit("requestCards", me.position)
   })
 
-  socket.on("showBuy", function(data){
-    if(data == me.position){
-      document.getElementById('buy').style.display = "block"
-      document.getElementById('pass').style.display = "block"
-    } else {
-      document.getElementById('buy').style.display = "none"
-      document.getElementById('pass').style.display = "none"
-    }
-  })
-
   socket.on("getBoard", function(data){
+    console.log("board data  ",data)
     if(data!=null){
-      var cardName = numbers[data.number] + suites[data.suite]
-      board[0].visible = true
-      board[0].changeAnimation(cardName)
+      board[0].loadAnimation(data.number, data.suite)
     } else {
-      board[0].visible = false
+      hide(board[0].sprite)
     }
     
   })
@@ -409,68 +585,19 @@ function setup() {
   socket.on("trickEnd", function(data){
     setTimeout(function(e){
       for(c of board){
-        c.visible = false
+        hide(c.sprite)
       }
-    }, 1500)
+    }, 1000)
   })
 
   socket.on("roundEnd", function(data){
     socket.emit("requestScores")
     socket.emit("requestCards")
   })
-}
+});
 
 
 
-
-function draw() {
-  background(23, 64, 26)
-  drawSprites(myCards)
-  drawSprites(topCards)
-  drawSprites(leftCards)
-  drawSprites(rightCards)
-  drawSprites(board)
-}
-
-function mouseClicked(evt){
-  let clickedCard;
-  let depth = -999
-  let clickedCardObj;
-
-  for(c of myCards){
-    if(clickOnCard(c,mouseX,mouseY)){
-      if(c.depth > depth){
-        depth = c.depth
-        clickedCard = c
-      }
-    }
-  }
-  if(typeof(clickedCard)!="undefined" && !clickedCard.active){
-    clickedCard.active = true
-    clickedCard.position.y-=25
-    for(c of myCards){
-      if(c != clickedCard && c.active){
-        c.active = false
-        c.position.y+=25
-      }
-    }
-  } else if(typeof(clickedCard)!="undefined" && clickedCard.active){
-    if(typeof(socket)!= "undefined"){
-      for(c of myCardsObject){
-        if(c.sprite == clickedCard){
-          clickedCardObj = c
-        }
-      }
-      var data = {
-        'position': me.position,
-        'number': clickedCardObj.number,
-        'suite': clickedCardObj.suite
-      }
-      socket.emit("makeMove", data)
-    }
-  }
-  
-}
 
 
 

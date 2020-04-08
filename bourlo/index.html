@@ -1,29 +1,125 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script type="text/javascript" src="script.js"></script>
-	<script type="text/javascript" src="p5.min.js"></script>
-	<script type="text/javascript" src="p5.play.js"></script>
+	<script
+	  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+	  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+	  crossorigin="anonymous"></script>
 	<script type="text/javascript" src="socket.io.js"></script>
+	<script type="text/javascript" src="script.js"></script>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
+	<div id="tradeSeven">
+		<span id="tradeSevenQuestion">Use 7?</span>
+		<span id="tradeSevenYes">Yes</span>
+		<span id="tradeSevenNo">No</span>
+	</div>
+	<span id="playCard">Play Card</span>
 	<span id='pass'>Pass</span>
 	<div id='buy'>
-		<img class="suite" data-suite='S' src="spade.png">
-		<img class="suite" data-suite='C' src="club.png">
-		<img class="suite" data-suite='H' src="heart.png">
-		<img class="suite" data-suite='D' src="diamond.png">
+		<img class="suite" data-suite='S' src="S.png">
+		<img class="suite" data-suite='C' src="C.png">
+		<img class="suite" data-suite='H' src="H.png">
+		<img class="suite" data-suite='D' src="D.png">
 	</div>
-	<span id="player1" class="playerName"></span>
-	<span id="player4" class="playerName"></span>
-	<span id="player3" class="playerName"></span>
-	<span id="player2" class="playerName"></span>
-	<input type="text" id="myName" placeholder="Enter Name"></input>
-	<button id="join">Join Game</button>
-	<span id="team1name"></span>
-	<span id="team2name"></span>
-	<span id="team1score"></span>
-	<span id="team2score"></span>
+	<div>
+		<input type="text" id="myName" placeholder="Enter Name"></input>
+		<button id="join">Join Game</button>
+	</div>
+	
+	<table id="scoreTable">
+		<tr>
+			<td id="team1name"></td>
+			<td id="team1score"></td>
+			<td id="team1previous" class="previousScore"></td>
+		</tr>
+		<tr>
+			<td id="team2name"></td>
+			<td id="team2score"></td>
+			<td id="team2previous" class="previousScore"></td>
+		</tr>
+	</table>
+
+	<div id="boardCards">
+		<img src="cards/back.png" id="boardCard1" class="boardCard">
+		<img src="cards/back.png" id="boardCard2" class="boardCard">
+		<img src="cards/back.png" id="boardCard3" class="boardCard">
+		<img src="cards/back.png" id="boardCard4" class="boardCard">
+	</div>
+
+	<div id="player1area">
+		<div class="player1name">	
+			<img src="deal.png" class="player1dealer dealerButton"></img>
+			<span id="player1" class="playerName"></span>
+			<img src="S.png" class="player1buy buyIcon"></img>
+		</div>
+		<div class="player1cards">
+			<img src="cards/back.png" id="player1card1" class="playerCard player1card">
+			<img src="cards/back.png" id="player1card2" class="playerCard player1card">
+			<img src="cards/back.png" id="player1card3" class="playerCard player1card">
+			<img src="cards/back.png" id="player1card4" class="playerCard player1card">
+			<img src="cards/back.png" id="player1card5" class="playerCard player1card">
+			<img src="cards/back.png" id="player1card6" class="playerCard player1card">
+			<img src="cards/back.png" id="player1card7" class="playerCard player1card">
+			<img src="cards/back.png" id="player1card8" class="playerCard player1card">
+		</div>
+		
+	</div>
+
+	<div id="player2area">
+		<div class="player2name">
+			<img src="deal.png" class="player2dealer dealerButton"></img>
+			<span id="player2" class="playerName"></span>
+			<img src="S.png" class="player2buy buyIcon"></img>
+		</div>
+		<div class="player2cards">
+			<img src="cards/back.png" id="player2card8" class="playerCard player2card">
+			<img src="cards/back.png" id="player2card7" class="playerCard player2card">
+			<img src="cards/back.png" id="player2card6" class="playerCard player2card">
+			<img src="cards/back.png" id="player2card5" class="playerCard player2card">
+			<img src="cards/back.png" id="player2card4" class="playerCard player2card">
+			<img src="cards/back.png" id="player2card3" class="playerCard player2card">
+			<img src="cards/back.png" id="player2card2" class="playerCard player2card">
+			<img src="cards/back.png" id="player2card1" class="playerCard player2card">
+		</div>
+	</div>
+
+	<div id="player3area">
+		<div class="player3name">
+			<img src="deal.png" class="player3dealer dealerButton"></img>
+			<span id="player3" class="playerName"></span>
+			<img src="S.png" class="player3buy buyIcon"></img>
+		</div>
+		<div class="player3cards">
+			<img src="cards/back.png" id="player3card8" class="playerCard player3card">
+			<img src="cards/back.png" id="player3card7" class="playerCard player3card">
+			<img src="cards/back.png" id="player3card6" class="playerCard player3card">
+			<img src="cards/back.png" id="player3card5" class="playerCard player3card">
+			<img src="cards/back.png" id="player3card4" class="playerCard player3card">
+			<img src="cards/back.png" id="player3card3" class="playerCard player3card">
+			<img src="cards/back.png" id="player3card2" class="playerCard player3card">
+			<img src="cards/back.png" id="player3card1" class="playerCard player3card">
+		</div>
+	</div>
+
+	<div id="player4area">
+		<div class="player4name">
+			<img src="deal.png" class="player4dealer dealerButton"></img>
+			<span id="player4" class="playerName"></span>
+			<img src="S.png" class="player4buy buyIcon"></img>
+		</div>
+		<div class="player4cards">
+			<img src="cards/back.png" id="player4card1" class="playerCard player4card">
+			<img src="cards/back.png" id="player4card2" class="playerCard player4card">
+			<img src="cards/back.png" id="player4card3" class="playerCard player4card">
+			<img src="cards/back.png" id="player4card4" class="playerCard player4card">
+			<img src="cards/back.png" id="player4card5" class="playerCard player4card">
+			<img src="cards/back.png" id="player4card6" class="playerCard player4card">
+			<img src="cards/back.png" id="player4card7" class="playerCard player4card">
+			<img src="cards/back.png" id="player4card8" class="playerCard player4card">
+		</div>
+	</div>
+	
 </body>
 </html>
