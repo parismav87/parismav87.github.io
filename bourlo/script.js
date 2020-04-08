@@ -354,7 +354,7 @@ function toggleBought(data){
 
 $( document ).ready(function() {
   console.log( "ready!" );
-  socket = io.connect("https://a562b535.ngrok.io")
+  socket = io.connect("https://70e24cbc.ngrok.io")
 
 
   board = []
