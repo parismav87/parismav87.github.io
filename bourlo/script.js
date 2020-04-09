@@ -62,6 +62,9 @@ function playCard(n,s,p){
     for(c of me.cards){
       if(c.active){
         hide(c.sprite)
+        hide("#playCard")
+        c.active = false
+        c.sprite.removeClass("active")
       }
     }
   } else {
@@ -245,6 +248,36 @@ function toggleTurn(gPos, buy){
   }
 }
 
+function toggleSeven(gPos, suite){
+  if(gPos == "top"){
+    for(c of topCards){
+      if($(c.sprite).attr("src").includes("back.png")){
+        // show(c.sprite);
+        c.loadAnimation(7, suite)
+        break;
+      }
+    }
+  } else if(gPos == "right"){
+    for(c of rightCards){
+      if($(c.sprite).attr("src").includes("back.png")){
+        // show(c.sprite);
+        c.loadAnimation(7, suite)
+        break;
+      }    }
+  } else if(gPos == "left"){
+    for(c of leftCards){
+      if($(c.sprite).attr("src").includes("back.png")){
+        // show(c.sprite);
+        c.loadAnimation(7, suite)
+        break;
+      }    
+    }
+  }
+  setTimeout(function(){
+    restoreBack(gPos)
+  },5000)
+}
+
 function restoreBack(gPos){
   if(gPos == "top"){
     for(c of topCards){
@@ -274,7 +307,7 @@ function handleDeclarations(data){
     }
     setTimeout(function(){
       restoreBack(gPos)
-    },3000)
+    },5000)
   }
 }
 
@@ -354,7 +387,7 @@ function toggleBought(data){
 
 $( document ).ready(function() {
   console.log( "ready!" );
-  socket = io.connect("https://d6fdb0e8.ngrok.io")
+  socket = io.connect("https://34050462.ngrok.io")
 
 
   board = []
@@ -374,7 +407,9 @@ $( document ).ready(function() {
           'suite': c.suite
         }
         socket.emit("makeMove", data)
-        hide("#playCard")
+        // hide("#playCard")
+        // c.active = false
+        // c.sprite.removeClass("active")
       }      
     }
   })
@@ -462,7 +497,7 @@ $( document ).ready(function() {
   socket.on("hasBought", function(data){
     console.log(data)
     toggleBought(data)
-    if(haveSeven(data.boardCard)){
+    if(haveSeven(data.boardCard) && data.seven){
       // console.log("i have 7")
       show("#tradeSeven")
     } else {
@@ -470,6 +505,15 @@ $( document ).ready(function() {
       socket.emit("tradeSevenNo", me.position)
     }
     
+  })
+
+  socket.on("tradedSeven", function(data){
+    console.log("traded seven ---")
+    console.log(data)
+    let gPos = getPosition(data.position)
+    let suite = data.suite
+    toggleSeven(gPos, suite)
+
   })
 
   socket.on("startRound", function(data){
@@ -500,6 +544,11 @@ $( document ).ready(function() {
     console.log(" turnnn  ")
     console.log(data)
     toggleTurn(pos, showBuy)
+  })
+
+  socket.on("lastRoundScores", function(data){
+    $("#team1previous").text(data[0].score)
+    $("#team2previous").text(data[1].score)
   })
 
   socket.on("dealer", function(data){
@@ -591,6 +640,10 @@ $( document ).ready(function() {
   })
 
   socket.on("roundEnd", function(data){
+    hide(".player1buy")
+    hide(".player2buy")
+    hide(".player3buy")
+    hide(".player4buy")
     socket.emit("requestScores")
     socket.emit("requestCards")
   })

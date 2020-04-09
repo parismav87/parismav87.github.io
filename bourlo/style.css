@@ -271,10 +271,12 @@ body{
 	position: absolute;
 	top: 0;
 	left: 80%;
+	visibility: hidden;
 }
 
 .previousScore{
 	color: orange !important;
+	padding-left: 5px;
 }
 
 #tradeSeven{
