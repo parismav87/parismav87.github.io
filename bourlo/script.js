@@ -387,7 +387,7 @@ function toggleBought(data){
 
 $( document ).ready(function() {
   console.log( "ready!" );
-  socket = io.connect("https://34050462.ngrok.io")
+  socket = io.connect("https://64f8d91c.ngrok.io")
 
 
   board = []
@@ -547,8 +547,8 @@ $( document ).ready(function() {
   })
 
   socket.on("lastRoundScores", function(data){
-    $("#team1previous").text(data[0].score)
-    $("#team2previous").text(data[1].score)
+    $("#team1previous").text(data[0].points)
+    $("#team2previous").text(data[1].points)
   })
 
   socket.on("dealer", function(data){
