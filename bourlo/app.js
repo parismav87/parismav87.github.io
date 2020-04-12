@@ -2,7 +2,9 @@ var app = require('express')();
 var cors = require('cors');
 app.use(cors());
 var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+var io = require('socket.io')(http, {
+	pingTimeout: 60000
+});
 
 io.set('origins', '*:*');
 
@@ -34,11 +36,22 @@ function Declaration(cards){
 		this.cards.push(c)
 	}
 
+	this.hasCard = function(n,s){
+		for(c of this.cards){
+			if(c.number == n && c.suite == s){
+				return true
+			}
+		}
+		return false
+	}
+
 	this.getType = function(){
 		if(this.cards[0].number == this.cards[1].number){
 			return "carre"
-		} else {
+		} else if(this.cards.length>2){
 			return "street"
+		} else {
+			return "bourlo"
 		}
 	}
 
@@ -54,13 +67,13 @@ function Declaration(cards){
 				return 200
 			}
 		} else {
-			if(this.cards.length == 3){
+			if(this.cards.length == 3 || this.cards.length == 2){ // small street or bourlo
 				return 20
 			} else if(this.cards.length == 4){
 				return 50
 			} else if(this.cards.length == 8){ //5 and 3
 				return 120
-			} else {
+			} else { // 5, 6 ,7
 				return 100
 			}
 		}
@@ -103,17 +116,85 @@ function Player(name, position, cards, socketId){
 		return false
 	}
 
+	this.cleanDeclarations = function(){
+		let toDelete = []
+		if(this.declarations.length>1){
+			for(let i=0; i<this.declarations.length-1; i++){
+				for(let j=i+1; j<this.declarations.length; j++){
+					let d1 = this.declarations[i]
+					let d2 = this.declarations[j]
+					if(d1.cards.length!=2 && d2.cards.length!=2){ //if not bourlo
+						for(c of d1.cards){
+							if(d2.hasCard(c.number, c.suite)){
+								if(d1.getType() == "carre"){
+									//delete d2
+									toDelete.push(j)
+								} else if(d2.getType() == "carre"){
+									//delete d1
+									toDelete.push(i)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		let newDeclarations = []
+		for(let ii =0; ii<this.declarations.length; ii++){
+			if(!toDelete.includes(ii)){
+				newDeclarations.push(this.declarations[ii])
+			}
+		}
+		this.declarations = newDeclarations
+	}
+
+	this.getVisualDeclarations = function(){
+		let hasBourlo = false
+		let vis = []
+		let removeBourlo = false
+		for(d of this.declarations){
+			if(d.getType() == "bourlo"){
+				hasBourlo = true
+			}
+		}
+		if(hasBourlo){
+			for(d of this.declarations){
+				if(d.hasCard(12, board.atou) && d.hasCard(13, board.atou) && d.getType() != "bourlo"){
+					removeBourlo = true
+				}
+			}
+			if(removeBourlo){
+				for(d of this.declarations){
+					if(d.getType() != "bourlo"){
+						vis.push(d)
+					}
+				}
+			} else {
+				vis = this.declarations
+			}
+		} else {
+			vis = this.declarations
+		}
+		return vis
+	}
+
 	this.getDeclarations = function(){
-		// console.log("checking player in position ", this.position)
-		// console.log(this.cards)
+		console.log("checking player in position ", this.position)
+		
 		this.getStreets()
 		this.getCarres()
 		this.getBourlo()
+		console.log(this.declarations)
+		this.cleanDeclarations()
+
+
+		console.log("after cleanup of player ", this.position)
+		console.log(this.declarations)
 		// console.log("emit declarations")
 		// console.log(this.declarations)
 		io.sockets.emit("declarations", {
 			"position": this.position,
-			"declarations": this.declarations
+			"declarations": this.getVisualDeclarations()
 		})
 	}
 
@@ -130,8 +211,8 @@ function Player(name, position, cards, socketId){
 				if(this.hasCard(n,s)){
 					// console.log("HAVE CARD")
 					count += 1 
-					declaration.push(new Card(n,s))
-					if(n == numbers.length-1 && count>2){ //street to A
+					declaration.push(new Card(Number(n),s))
+					if(n == 14 && count>2){ //street to A
 						// console.log("found street of ", suites[s], "s")
 						// console.log(declaration)
 						this.declarations.push(new Declaration(declaration))
@@ -156,20 +237,22 @@ function Player(name, position, cards, socketId){
 	this.getCarres = function(){
 		// console.log("checking carre")
 		for(n in numbers){
-			let declaration = []
-			let count = 0;
-			for(c of this.cards){
-				if(c.number == n){
-					count +=1
-					declaration.push(new Card(c.number,c.suite))
+			if(n != 7 && n!=8 ){
+				let declaration = []
+				let count = 0;
+				for(c of this.cards){
+					if(c.number == n){
+						count +=1
+						declaration.push(new Card(Number(c.number),c.suite))
+					}
 				}
-			}
-			if(count == 4){
-				// console.log("found carre of ", numbers[n], "s")
-				// console.log(declaration)
-				this.declarations.push(new Declaration(declaration))
-			} else {
-				declaration = []
+				if(count == 4){
+					// console.log("found carre of ", numbers[n], "s")
+					// console.log(declaration)
+					this.declarations.push(new Declaration(declaration))
+				} else {
+					declaration = []
+				}
 			}
 		}
 	}
@@ -266,6 +349,7 @@ function Board(cards){
 	this.atou = 0
 	this.moves = []
 	this.dealer = 0
+	this.tricks = []
 
 	this.isValidMove = function(player, newCard){
 
@@ -345,15 +429,15 @@ function Board(cards){
 
 	this.endTrick = function(){
 		var asking = this.moves[0].card.suite
-		var bestNormal = 0
+		var bestNormal = -1
 		var bestAtou = -1
 		var trickPoints = 0
 		var winningPlayer = this.moves[0].player
 
 		for(m of this.moves){
 			if(m.card.suite == this.atou){
-				if(scoresAtou[m.card.number]>bestAtou){
-					bestAtou = scoresAtou[m.card.number]
+				if(valuesAtou.indexOf(m.card.number)> bestAtou){
+					bestAtou = valuesAtou.indexOf(m.card.number)
 					winningPlayer = m.player
 					trickPoints += scoresAtou[m.card.number]
 				} else {
@@ -361,8 +445,8 @@ function Board(cards){
 				}
 				
 			} else if(m.card.suite == asking && bestAtou == -1){
-				if(scoresNormal[m.card.number]>bestNormal){
-					bestNormal = scoresNormal[m.card.number]
+				if(valuesNormal.indexOf(m.card.number)> bestNormal){
+					bestNormal = valuesNormal.indexOf(m.card.number)
 					winningPlayer = m.player
 					trickPoints += scoresNormal[m.card.number]
 				} else {
@@ -392,6 +476,7 @@ function Board(cards){
 				p.hasTurn = true
 			}
 		}
+		this.tricks.push(winningPlayer.team-1)
 		// console.log(winningPlayer, bestAtou, bestNormal)
 		this.cards = []
 		this.moves = []
@@ -399,10 +484,12 @@ function Board(cards){
 
 
 	this.passTurn = function(){
+		console.log("passing turn ")
 		let newTurn = 0
 		for(p of players){
 			if(p.hasTurn){
-				// p.hasTurn = false
+				// p.hasTurn = false	
+				console.log("player ", p.position, " had turn.")
 				newTurn = p.position + 1
 				if(newTurn>4){
 					newTurn = 1
@@ -413,6 +500,7 @@ function Board(cards){
 	}
 
 	this.setTurn = function(pos){
+		console.log("new turn for player ", pos)
 		for(p of players){
 			if(p.position == pos){
 				p.hasTurn = true
@@ -423,16 +511,26 @@ function Board(cards){
 	}
 
 	this.passDealer = function(){
+		console.log("passing dealer")
 		let newDealer = 0
 		for(p of players){
 			if(p.position == this.dealer){
+				console.log("player ", p.position, " had dealer.")
 				newDealer = p.position + 1
 				if(newDealer>4){
 					newDealer = 1
 				}
 			}
 		}
+
 		this.dealer = newDealer
+		console.log("new dealer for player ", this.dealer)
+
+		let newTurn = newDealer+1
+		if(newTurn>4){
+			newTurn = 1 
+		}
+		this.setTurn(newTurn)
 	}
 }
 
@@ -462,12 +560,52 @@ function Team(teamId){
 	}
 }
 
+function setCards(){
+	for(p of players){
+		p.cards = []
+	}
+	players[0].cards.push(new Card(7,1))
+	players[0].cards.push(new Card(7,2))
+	players[0].cards.push(new Card(7,3))
+	players[0].cards.push(new Card(8,4))
+	players[0].cards.push(new Card(8,1))
+	players[0].cards.push(new Card(12,1))
+	players[0].cards.push(new Card(13,1))
+	players[0].cards.push(new Card(14,1))
+
+	players[1].cards.push(new Card(7,2))
+	players[1].cards.push(new Card(7,2))
+	players[1].cards.push(new Card(7,2))
+	players[1].cards.push(new Card(8,2))
+	players[1].cards.push(new Card(8,2))
+	players[1].cards.push(new Card(12,2))
+	players[1].cards.push(new Card(13,2))
+	players[1].cards.push(new Card(14,2))
+
+	players[2].cards.push(new Card(7,3))
+	players[2].cards.push(new Card(7,3))
+	players[2].cards.push(new Card(7,3))
+	players[2].cards.push(new Card(8,3))
+	players[2].cards.push(new Card(8,3))
+	players[2].cards.push(new Card(12,3))
+	players[2].cards.push(new Card(13,3))
+	players[2].cards.push(new Card(14,3))
+
+	players[3].cards.push(new Card(7,4))
+	players[3].cards.push(new Card(7,4))
+	players[3].cards.push(new Card(7,4))
+	players[3].cards.push(new Card(8,4))
+	players[3].cards.push(new Card(8,4))
+	players[3].cards.push(new Card(8,4))
+	players[3].cards.push(new Card(13,4))
+	players[3].cards.push(new Card(14,4))
+}
+
 function deal(deck, players, nrCards){
-	console.log("dealing ---- ")
+	console.log("dealing ---- ", nrCards)
 	// console.log(deck)
 	// console.log(players)
 	// console.log(pile)
-	console.log(nrCards)
 	
 	if(nrCards == 5){
 		deck.shuffle()
@@ -498,13 +636,22 @@ function deal(deck, players, nrCards){
 				board.cards.shift()
 			}
 			p.sortCards()
+			// p.getDeclarations()
+		}
+
+
+		//SET CARDS COMMENT BELOW
+		board.atou = 4
+		console.log(' ATOU IS ', board.atou)
+		setCards()
+
+		for(p of players){
 			p.getDeclarations()
 		}
+		calculateScores()
 		
 	}
 
-
-	
 	if(board.dealer == 0){
 		var turn = Math.floor(Math.random() * 4) + 1;
 		for(p of players){
@@ -545,119 +692,144 @@ function resetRound(){
 	deck.cards.push(board.cards[0])
 	board.cards.shift()
 	pile.empty(deck)
+	board.tricks = []
 
 
-	board.passTurn()
+	// board.passTurn()
 	board.passDealer()
 	// board.passTurn()
 
 	// console.log("after reset")
 	// console.log("board")
 	// console.log(deck.cards)
-		
+}
+
+function compareDeclarations(hd, d2){
+	let d1 = hd[0]
+	if(d1.cards.length == 2){
+		console.log("d1 is bourlo.")
+		return [d2]
+	} else if(d2.cards.length == 2){
+		console.log("d2 is bourlo.")
+		return hd
+	}
+	if(d1.getPoints() > d2.getPoints()){
+		console.log(" d1 higher points")
+		return hd
+	} else if(d2.getPoints() > d1.getPoints()){
+		console.log(" d1 higher points")
+		return [d2]
+	}
+	if(d1.getType() == "carre" && d2.getType() == "street"){
+		console.log("d1 is carre")
+		return hd
+	} else if(d2.getType() == "carre" && d1.getType() == "street"){
+		console.log("d2 is carre")
+		return [d2]
+	}
+	if(d1.getHighCard() > d2.getHighCard()){
+		console.log("d1 higher card")
+		return hd
+	} else if(d2.getHighCard() > d1.getHighCard()){
+		console.log("d2 higher card")
+		return [d2]
+	}
+	if(d1.cards[0].suite == board.atou){
+		console.log("d1 is atou")
+		return hd
+	} else if(d2.cards[0].suite == board.atou){
+		console.log("d2 is atou")
+		return [d2]
+	}
+	if(d1.cards.length > d2.cards.length){
+		console.log("d1 longer declaration")
+		return hd
+	} else if(d2.cards.length > d1.cards.length){
+		console.log("d2 longer declaration")
+		return [d2]
+	}
+	if(hd.length>1){
+		console.log("hd length is >1")
+		return hd.concat(d2)
+	} else{
+		console.log("hd length is 1")
+		return hd.concat(d2)
+	}
 
 }
 
 function integrateDeclarations(){
-	var highestDeclaration = 0
-	var highestPosition = []
-	var highestType = ""
-	var highestCard = 0
-	var highestLength = 0
+	let highestDeclaration = []
 	for(p of players){
+		console.log(" player ----> ", p.position)
+		console.log(p.cards)
+		console.log(" ---- ")
 		for(d of p.declarations){
-			if(d.cards.length != 2){ //not bourlo
-				if(d.getPoints()>highestDeclaration){
-					highestDeclaration = d.getPoints()
-					if(highestPosition.length == 0){
-						highestPosition.push(p.position)
-					} else {
-						highestPosition = []
-						highestPosition.push(p.position)
-					}
-					highestType = d.getType()
-					highestCard = d.getHighCard()
-					highestLength = d.cards.length
-				} else if(d.getPoints() == highestDeclaration){
-					if(d.getType() == highestType){ //if same type
-						if(d.getHighCard() == highestCard){ //similar street
-							// highestPosition.push(p.position)
-							if(d.cards[0].suite == board.atou){
-								highestDeclaration = d.getPoints()
-								if(highestPosition.length == 0){
-									highestPosition.push(p.position)
-								} else {
-									highestPosition = []
-									highestPosition.push(p.position)
-								}
-								highestType = d.getType()
-								highestCard = d.getHighCard()
-								highestLengh = d.cards.length
-							} else {
-								if(d.cards.length > highestLength){
-									highestDeclaration = d.getPoints()
-									if(highestPosition.length == 0){
-										highestPosition.push(p.position)
-									} else {
-										highestPosition = []
-										highestPosition.push(p.position)
-									}
-									highestType = d.getType()
-									highestCard = d.getHighCard()
-									highestLengh = d.cards.length
-								} else {
-									highestPosition.push(p.position)
-								}
-							}
-						} else if(d.getHighCard()>highestCard){
-							highestDeclaration = d.getPoints()
-							if(highestPosition.length == 0){
-								highestPosition.push(p.position)
-							} else {
-								highestPosition = []
-								highestPosition.push(p.position)
-							}
-							highestType = d.getType()
-							highestCard = d.getHighCard()
-							highestLengh = d.cards.length
-						}
-					} else {// not same type
-						if(d.getType() == "carre"){ //carre beats street
-							highestDeclaration = d.getPoints()
-							if(highestPosition.length == 0){
-								highestPosition.push(p.position)
-							} else {
-								highestPosition = []
-								highestPosition.push(p.position)
-							}
-							highestType = d.getType()
-							highestCard = d.getHighCard()
-							highestLengh = d.cards.length
-						}
-					}
-				}
+			console.log(d)
+			console.log(d.getType())
+			console.log(d.getPoints())
+			console.log(d.getHighCard())
+			if(highestDeclaration.length != 0){
+				console.log("comparing declarations")
+				highestDeclaration = compareDeclarations(highestDeclaration, d)
 			} else {
-				teams[p.team-1].points += 20 //add 20 for bourlo
+				console.log("1st declaration")
+				highestDeclaration.push(d)
 			}
 		}
 	}
-	// console.log("highest position ", highestPosition[0])
-	// console.log("highestpoint")
-	if(highestPosition.length == 1){
-		// console.log("highest position ", highestPosition[0])
-		// console.log("highestpoints", highestDeclaration)
-		var pos = 0
-		var team = 0
+	if(highestDeclaration.length == 1){
+		console.log("highest declaration length is 1")
+		let pos = 0
+		let team = 0
 		for(p of players){
-			if(p.position == highestPosition){
-				pos = p.position
-				team = p.team
+			for(d of p.declarations){
+				if(d == highestDeclaration[0]){
+					pos = p.position
+					team = p.team
+				}
 			}
 		}
 		for(p of players){
 			if(p.team == team){
 				for(d of p.declarations){
-					teams[team-1].points += d.getPoints()
+					if(d.cards.length!= 2){
+						teams[team-1].points += d.getPoints()
+					}
+				}
+			}
+		}
+	} else if(highestDeclaration.length!=0){ 
+		console.log("highest declaration length is >1")
+		let teams = []
+		let flag = true
+		for(p of players){
+			for(d of p.declarations){
+				for(h of highestDeclaration){
+					console.log(" critical comparison ")
+					console.log(d)
+					console.log(h)
+					console.log(d == h)
+					if(d == h){
+						teams.push(p.team)
+					}
+				}
+			}
+		}
+		for(t of teams){
+			if(t!=teams[0]){
+				flag = false
+			}
+		}
+		if(flag){
+			console.log("all same team!")
+			for(p of players){
+				if(p.team == teams[0]){
+					for(d of p.declarations){
+						if(d.cards.length!= 2){
+							teams[team-1].points += d.getPoints()
+						}
+					}
 				}
 			}
 		}
@@ -666,26 +838,66 @@ function integrateDeclarations(){
 
 function calculateScores(){
 	console.log("calculating scores ")
-	console.log(teams[0].points, teams[1].points)
-	// console.log(teams[0].hasBought())
-	// console.log(teams[1].hasBought())
 	let t1 = teams[0]
 	let t2 = teams[1]
 	integrateDeclarations()
+	console.log("team 1 has bought? ", t1.hasBought())
+	console.log("team 2 has bought? ", t2.hasBought())
+	console.log("team 1 points ", t1.points)
+	console.log("team 2 points ", t2.points)
 	if(t1.hasBought() && t1.points < t2.points){
-		t1.points = 0
 		t2.score += (t2.points + t1.points)
 	} else if(t2.hasBought() && t2.points < t1.points){
-		t2.points = 0
 		t1.score += (t2.points + t1.points)
 	} else {
+		if(isKapo(0)){ //kapo
+			teams[0].points+= 88 // 250-162
+			for(p of teams[1].players){
+				for(d of p.declarations){
+					if(d.getType != "bourlo"){
+						teams[0].points += d.getPoints()
+						teams[1].points -= d.getPoints()
+					}
+				}
+			}
+
+		} else if(isKapo(1)){
+			teams[1].points += 88
+			for(p of teams[0].players){
+				for(d of p.declarations){
+					if(d.getType != "bourlo"){
+						teams[1].points += d.getPoints()
+						teams[0].points -= d.getPoints()
+					}
+				}
+			}
+		}
 		for (t of teams){
 			t.score += t.points
 		}
 	}
+
+	console.log("team 1 scored ", t1.points)
+	console.log("team 2 scored ", t2.points)
+
 	io.sockets.emit("lastRoundScores", teams)
 	t1.points = 0
 	t2.points = 0
+}
+
+function isKapo(team){
+	console.log(board)
+	if(board.tricks.length==0){
+		return false
+	}
+	for(t of board.tricks){
+		if(t != team){
+			return false
+		}
+	}
+
+	console.log("is kapo")
+	return true
 }
 
 function getSuite(su){
@@ -986,13 +1198,12 @@ io.on('connection', function(socket){
 		}
 		if(allAnsweredSeven()){
 			deal(deck, players, 8)
-			socket.emit("startRound")
-			socket.broadcast.emit("startRound")
+			io.sockets.emit("startRound")
 		}
 	})
 
 	socket.on("tradeSevenYes", function(data){
-		// console.log("trade yes", data)
+		console.log("trade seven yes", data)
 		for(p of players){
 			if (p.position == data){
 				p.useSeven = true
@@ -1000,10 +1211,16 @@ io.on('connection', function(socket){
 			}
 		}
 		if(allAnsweredSeven()){
+			console.log("all have answered")
 			deal(deck, players, 8)
-			socket.emit("startRound")
-			socket.broadcast.emit("startRound")
+			io.sockets.emit("startRound")
+			io.sockets.emit("tradedSeven", {
+				"position": data,
+				"suite": board.atou
+			})
 		}
+
+
 	})
 
   socket.on("requestScores", function(data){
@@ -1088,8 +1305,8 @@ io.on('connection', function(socket){
   	togglePass(position)
 
   	if(allPlayersPass()){
-  		board.passTurn()
-  		board.passDealer()
+  		// board.passTurn()
+  		// board.passDealer()
 
   		resetRound()
   		deal(deck, players, 5)
