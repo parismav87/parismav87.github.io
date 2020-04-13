@@ -347,6 +347,7 @@ function toggleDealer(gPos){
   hide(".player2dealer")
   hide(".player3dealer")
   hide(".player4dealer")
+  me.dealer = false
   if(gPos == "top"){
     show(".player3dealer")
   } else if(gPos == "right"){
@@ -355,6 +356,7 @@ function toggleDealer(gPos){
     show(".player4dealer")
   } else{
     show(".player1dealer")
+    me.dealer = true
   }
 }
 
@@ -387,7 +389,7 @@ function toggleBought(data){
 
 $( document ).ready(function() {
   console.log( "ready!" );
-  socket = io.connect("https://838e73eb.ngrok.io")
+  socket = io.connect("localhost:3000")
 
 
   board = []
@@ -474,7 +476,8 @@ $( document ).ready(function() {
     team: 0,
     hasTurn: false,
     bought: false,
-    hasJoined : false
+    hasJoined : false,
+    dealer: false
   }
 
   initCards()
@@ -497,7 +500,7 @@ $( document ).ready(function() {
   socket.on("hasBought", function(data){
     console.log(data)
     toggleBought(data)
-    if(haveSeven(data.boardCard) && data.seven){
+    if(haveSeven(data.boardCard) && data.seven && !me.dealer){
       // console.log("i have 7")
       show("#tradeSeven")
     } else {
